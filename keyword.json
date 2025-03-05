@@ -1,0 +1,88 @@
+RELEVANT_KEYWORDS = {
+    # Self-Improvement & Personal Growth
+    'self-improvement', 'personal growth', 'mindset', 'discipline', 'resilience',
+    'self-discipline', 'habit building', 'goal setting', 'life planning', 'motivation',
+    'time management', 'productivity', 'focus', 'deep work', 'self-awareness',
+    'personal transformation', 'growth mindset', 'procrastination', 'limiting beliefs',
+    'goal achievement', 'action-taking', 'life design', 'habit stacking', 'morning routine',
+    'evening routine', 'journaling', 'visualization', 'success habits', 'habit loops',
+    'self-optimization', 'delayed gratification', 'positive habits', 'habit triggers',
+    'success rituals', 'personal breakthroughs', 'habit tracking', 'behavioral change',
+    'intentional living', 'personal accountability', 'mindset mastery', 'peak performance',
+    'habit systems', 'life blueprint', 'personal effectiveness', 'micro habits', 'value alignment',
+
+    # Psychology & Emotional Intelligence
+    'psychology', 'emotional intelligence', 'cognitive biases', 'cognitive psychology',
+    'subconscious', 'behavioral psychology', 'self-awareness', 'personality psychology',
+    'decision heuristics', 'cognitive distortions', 'emotional triggers', 'self-esteem',
+    'stress management', 'mindfulness', 'neuroscience', 'brain training', 'emotional agility',
+    'positive psychology', 'inner critic', 'mental health', 'rumination', 'self-sabotage',
+    'impulse control', 'inner dialogue', 'self-validation', 'thought reframing',
+    'emotional healing', 'social cognition', 'psychological resilience', 'neuroplasticity',
+    'emotional anchors', 'subconscious programming', 'mental habits', 'behavioral patterns',
+    'emotional granularity', 'self-talk', 'mental clarity', 'inner narrative', 'mood regulation',
+    'emotional reflexes', 'cognitive flexibility', 'decision fatigue', 'meta-cognition',
+    'perception management', 'fear extinction', 'emotional literacy', 'neuro-associations',
+    'anxiety management', 'self-soothing', 'inner resourcefulness', 'thought patterns',
+    'emotional resilience', 'psychological flexibility', 'self-compassion', 'cognitive training',
+
+    # Skill Acquisition & Mastery
+    'skill acquisition', 'deliberate practice', 'learning agility', 'mastery', 'skill development',
+    'deep learning', 'competency development', 'learning projects', 'competence mapping',
+    'knowledge scaffolding', 'self-directed learning', 'adaptive learning', 'upskilling',
+    'performance mastery', 'competency frameworks', 'learning habits', 'knowledge mastery',
+    'practice techniques', 'reflective learning', 'learning checklists', 'progress tracking',
+    'learning journals', 'personal learning plans', 'learning mindsets', 'knowledge integration',
+    'skill mastery systems', 'learning optimization', 'learning feedback', 'competency audits',
+    'learning blueprints', 'competence roadmaps', 'learning assessments', 'competence tracking',
+    'learning cycle reviews', 'skill strengthening', 'learning experiments', 'learning milestones',
+    'learning sprints', 'practice deep dives', 'learning review loops', 'microlearning',
+
+    # Communication & Interpersonal Skills
+    'communication', 'persuasion', 'influence', 'negotiation', 'conflict resolution',
+    'public speaking', 'presentation skills', 'active listening', 'storytelling', 'rapport building',
+    'social intelligence', 'nonverbal communication', 'body language', 'conversational skills',
+    'empathy', 'assertiveness', 'difficult conversations', 'effective communication', 'charisma',
+    'relationship building', 'personal branding', 'networking', 'team communication',
+    'persuasion strategies', 'collaborative communication', 'conflict management',
+    'feedback delivery', 'personal storytelling', 'trust building', 'engagement skills',
+    'communication frameworks', 'pitching ideas', 'persuasive language', 'authentic communication',
+    'small talk', 'relationship intelligence', 'social calibration', 'relationship nurturing',
+    'verbal communication', 'written communication', 'narrative building', 'social fluency',
+    'team dynamics', 'empathy-based communication', 'cross-cultural communication',
+
+    # Professional & Personal Strategy
+    'strategy', 'goal setting', 'decision making', 'personal philosophy', 'critical thinking',
+    'life planning', 'tactical thinking', 'problem solving', 'success principles', 'decision frameworks',
+    'competitive advantage', 'scenario planning', 'personal vision', 'future planning',
+    'mental models', 'strategic thinking', 'decision processes', 'goal frameworks', 'life architecture',
+    'priority management', 'performance measurement', 'goal alignment', 'personal KPIs',
+    'outcome-based thinking', 'systems thinking', 'life optimization', 'strategic prioritization',
+    'personal success strategies', 'time optimization', 'decision mapping', 'personal SWOT analysis',
+    'goal recalibration', 'long-term visioning', 'focus alignment', 'decision confidence',
+    'adaptive planning', 'goal flexibility', 'risk management', 'success roadmaps', 'opportunity spotting',
+    'habit strategy', 'personal leverage', 'life planning frameworks', 'adaptive strategies',
+    'self-strategy alignment', 'decision audits', 'big picture thinking', 'personal governance',
+
+    # Emotional Management
+    'emotional control', 'self-regulation', 'emotional resilience', 'inner strength', 'overcoming fear',
+    'anger management', 'stress reduction', 'calmness', 'emotional mastery', 'handling criticism',
+    'fear management', 'managing expectations', 'self-control', 'emotional flexibility',
+    'coping strategies', 'frustration tolerance', 'emotional detox', 'emotional independence',
+    'managing uncertainty', 'emotional stability', 'inner calm', 'emotional detachment', 'emotional anchoring',
+    'reaction control', 'stress inoculation', 'fearless mindset', 'emotion-focused coping',
+    'resilience training', 'stress adaptation', 'emotional renewal', 'emotional self-sufficiency',
+    'worry management', 'coping skills', 'emotional balance', 'emotional toughness', 'crisis resilience',
+    'emotional fitness', 'emotional recalibration', 'handling rejection', 'emotional wellbeing',
+    'self-centering', 'emotional de-escalation', 'inner balance', 'fear processing', 'resilience habits',
+
+    # Specific Themes
+    'seduction', 'art of living', 'minimalism', 'stoicism', 'personal power', 'creativity',
+    'entrepreneurship', 'life lessons', 'life philosophy', 'mindfulness techniques', 'zen habits',
+    'spiritual growth', 'personal fulfillment', 'purpose discovery', 'meditation', 'value discovery',
+    'mind-body connection', 'self-acceptance', 'existential thinking', 'inner transformation',
+    'life experiments', 'voluntary discomfort', 'life optimization', 'self-reliance', 'personal awakening',
+    'philosophical inquiry', 'holistic growth', 'life artistry', 'personal legacy', 'life curation',
+    'inner alignment', 'self-actualization', 'meaningful living', 'personal philosophy crafting',
+    'wisdom cultivation', 'core values', 'life congruence', 'spiritual alignment', 'inner dialogue mastery'
+}
