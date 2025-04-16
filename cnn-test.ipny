@@ -1,0 +1,131 @@
+import os
+import cv2
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from tensorflow.keras.models import load_model
+from tensorflow.keras.applications.efficientnet import preprocess_input
+from ipywidgets import FileUpload, Button, Output, VBox, HBox
+from IPython.display import display
+
+# Load the trained model
+MODEL_PATH = 'cnn-model.h5'
+model = load_model(MODEL_PATH, compile=False)
+
+# Load class mapping
+class_mapping = pd.read_csv('class_mapping.csv')
+index_to_species = dict(zip(class_mapping['index'], class_mapping['species']))
+
+# Image preprocessing parameters
+IMG_HEIGHT = 224
+IMG_WIDTH = 224
+
+def preprocess_image(img_path):
+    """Preprocess an image for model prediction using EfficientNet preprocessing."""
+    img = cv2.imread(img_path)
+    img_cv = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    img_cv = cv2.resize(img_cv, (IMG_WIDTH, IMG_HEIGHT))
+    img_cv = preprocess_input(img_cv.astype('float32'))  # EfficientNet normalization
+    print(f"Image shape: {img_cv.shape}, Min: {img_cv.min()}, Max: {img_cv.max()}, Mean: {img_cv.mean():.4f}")
+    return np.expand_dims(img_cv, axis=0)
+
+def process_image(uploader):
+    """Process uploaded images and make predictions."""
+    if not uploader.value:
+        print("No file uploaded.")
+        return
+    
+    # Debug the upload value type
+    print(f"Upload value type: {type(uploader.value)}")
+    
+    # Get first uploaded file regardless of format
+    temp_name = "temp_image.jpg"
+    
+    try:
+        # Extract file content based on the uploader value format
+        if hasattr(uploader, 'data') and uploader.data:
+            file_content = uploader.data[0]
+        elif isinstance(uploader.value, dict):
+            # Get the first value from the dictionary
+            first_file = next(iter(uploader.value.values()))
+            file_content = first_file['content']
+        elif isinstance(uploader.value, tuple) and len(uploader.value) > 0:
+            # Handle tuple format - common in some Jupyter environments
+            first_file = uploader.value[0]
+            if isinstance(first_file, dict) and 'content' in first_file:
+                file_content = first_file['content']
+            else:
+                raise ValueError(f"Unexpected format in tuple: {type(first_file)}")
+        else:
+            # Try direct assignment as a last resort
+            file_content = uploader.value
+            
+        # Save the file content
+        with open(temp_name, 'wb') as f:
+            f.write(file_content)
+            
+    except Exception as e:
+        print(f"Error saving file: {e}")
+        print(f"Upload value structure: {str(uploader.value)[:100]}...")
+        
+        # Let's try to extract more information about the structure
+        if isinstance(uploader.value, tuple):
+            print(f"Tuple length: {len(uploader.value)}")
+            if len(uploader.value) > 0:
+                first_item = uploader.value[0]
+                print(f"First item type: {type(first_item)}")
+                if isinstance(first_item, dict):
+                    print(f"Dict keys: {first_item.keys()}")
+        return
+    
+    # Read and display the image
+    img = cv2.imread(temp_name)
+    if img is None:
+        print("Error reading the image")
+        return
+    
+    img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    plt.figure(figsize=(6, 6))
+    plt.imshow(img_rgb)
+    plt.axis('off')
+    plt.title("Uploaded Image")
+    plt.show()
+    
+    # Preprocess for model using EfficientNet preprocessing
+    preprocessed_img = preprocess_image(temp_name)
+    
+    # Make prediction
+    prediction = model.predict(preprocessed_img, verbose=0)
+    
+    # Get top prediction
+    predicted_index = np.argmax(prediction)
+    predicted_species = index_to_species.get(predicted_index, f"Unknown class {predicted_index}")
+    confidence = prediction[0][predicted_index] * 100
+    
+    print(f"Predicted Species: {predicted_species} ({confidence:.2f}%)")
+    
+    # Show top 5 predictions
+    top_indices = np.argsort(prediction[0])[-5:][::-1]
+    print("\nTop 5 predictions:")
+    for idx in top_indices:
+        species = index_to_species.get(idx, f"Unknown class {idx}")
+        print(f"{species}: {prediction[0][idx]*100:.2f}%")
+    
+    # Clean up temp file
+    try:
+        os.remove(temp_name)
+    except:
+        pass
+
+# Create widgets
+upload = FileUpload(accept='.jpg,.jpeg,.png', multiple=False)
+upload_button = Button(description='Classify Image')
+output = Output()
+
+def on_button_clicked(b):
+    with output:
+        output.clear_output()
+        process_image(upload)
+
+upload_button.on_click(on_button_clicked)
+display(VBox([upload, upload_button, output]))
