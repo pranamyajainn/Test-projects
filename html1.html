@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HireAI - AI Interview Chamber</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- WebSocket Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.js"></script>
+
+    <style>
+        :root {
+            --bg-primary: #121216;
+            --bg-secondary: #1a1a20;
+            --accent-green: #51cf66;
+            --text-primary: #e9ecef;
+            --text-secondary: #adb5bd;
+            --border-primary: #343a40;
+            --bg-primary-rgb: 18, 18, 22;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+        }
+
+        .interview-chamber {
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            perspective: 1000px;
+        }
+
+        .interview-chamber.visible {
+            opacity: 1;
+        }
+
+        #particle-container {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at center, rgba(81, 207, 102, 0.05) 0%, transparent 70%);
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        #particle-container::after {
+            content: '';
+            position: absolute;
+            top: -200%; left: -50%;
+            width: 200%; height: 400%;
+            background-image: radial-gradient(circle, var(--accent-green) 1px, transparent 1.5px);
+            background-size: 30px 30px;
+            animation: move-particles 25s linear infinite;
+        }
+        @keyframes move-particles {
+            from { transform: translateY(0); }
+            to { transform: translateY(-50%); }
+        }
+
+        .ai-orb-container {
+            position: relative;
+            z-index: 10;
+        }
+        
+        .ai-orb {
+            width: 200px; height: 200px;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: rotate-orb 30s linear infinite;
+        }
+
+        .ai-orb-core {
+            width: 100%; height: 100%;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 35%, #fff, rgba(81, 207, 102, 0.9) 40%, rgba(43, 138, 62, 0.7) 70%, transparent 100%);
+            box-shadow: 0 0 20px rgba(81, 207, 102, 0.5), 0 0 40px rgba(81, 207, 102, 0.4), 0 0 80px rgba(81, 207, 102, 0.3), inset 0 0 30px rgba(255, 255, 255, 0.3);
+            transition: all 0.5s ease-in-out;
+        }
+
+        /* Avatar States */
+        .ai-orb.speaking .ai-orb-core {
+            animation: pulsate-speak 0.5s ease-in-out infinite alternate;
+        }
+        .ai-orb.listening .ai-orb-core {
+            animation: pulsate-listen 4s ease-in-out infinite;
+        }
+        @keyframes pulsate-listen {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 20px rgba(81, 207, 102, 0.5), 0 0 40px rgba(81, 207, 102, 0.4), 0 0 80px rgba(81, 207, 102, 0.3); }
+            50% { transform: scale(1.05); box-shadow: 0 0 30px rgba(81, 207, 102, 0.7), 0 0 60px rgba(81, 207, 102, 0.6), 0 0 120px rgba(81, 207, 102, 0.4); }
+        }
+        @keyframes pulsate-speak {
+            from { transform: scale(1.05); }
+            to { transform: scale(1.15); }
+        }
+        @keyframes rotate-orb {
+            from { transform: rotateY(0deg) rotateX(5deg); }
+            to { transform: rotateY(360deg) rotateX(5deg); }
+        }
+        
+        .status-panel {
+            z-index: 10;
+            text-align: center;
+            margin-top: 2rem;
+            width: 80%;
+            max-width: 600px;
+        }
+        .status-message {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            min-height: 2em;
+            transition: opacity 0.3s;
+        }
+        .speech-transcript {
+            font-size: 1.5rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-top: 0.5rem;
+            min-height: 2.5em;
+            transition: opacity 0.3s;
+        }
+
+        .controls {
+            z-index: 10;
+            margin-top: 2.5rem;
+            display: flex;
+            gap: 1.5rem;
+        }
+        
+        .control-btn {
+            background: linear-gradient(135deg, var(--accent-green), #40c057);
+            color: var(--bg-primary);
+            border: 1px solid var(--accent-green);
+            padding: 1rem 2.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(81, 207, 102, 0.3);
+        }
+        .control-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(81, 207, 102, 0.45);
+        }
+        .control-btn:disabled {
+            background: var(--border-primary);
+            color: var(--text-secondary);
+            border-color: #495057;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .setup-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(var(--bg-primary-rgb), 0.7);
+            backdrop-filter: blur(10px);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .setup-modal {
+            background: linear-gradient(135deg, var(--bg-secondary), var(--bg-card, #212529));
+            border: 1px solid var(--border-primary);
+            padding: 3rem;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: 0 16px 48px rgba(0,0,0,0.5);
+            animation: fadeInModal 0.5s ease-out;
+        }
+        @keyframes fadeInModal {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .setup-modal h2 {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+        }
+        .setup-modal input {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-primary);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            color: var(--text-primary);
+            font-size: 1rem;
+            width: 100%;
+            margin-bottom: 1.5rem;
+        }
+        .hidden { display: none; }
+    </style>
+</head>
+
+<body>
+    <!-- Initial Setup Screen -->
+    <div class="setup-overlay" id="setupOverlay">
+        <div class="setup-modal">
+            <h2>AI Interview Setup</h2>
+            <input type="text" id="candidateName" placeholder="Enter Your Name" required>
+            <input type="text" id="jobTitle" placeholder="Enter Job Title (e.g., 'Software Engineer')">
+            <button class="control-btn" onclick="startInterview()">Begin Your Session</button>
+        </div>
+    </div>
+
+    <!-- Main Interview Chamber -->
+    <div class="interview-chamber" id="interviewChamber">
+        <div id="particle-container"></div>
+        
+        <div class="ai-orb-container">
+            <div class="ai-orb listening" id="avatarOrb">
+                <div class="ai-orb-core"></div>
+            </div>
+        </div>
+
+        <div class="status-panel">
+            <p class="status-message" id="statusMessage">Initializing Interview Chamber...</p>
+            <p class="speech-transcript" id="speechTranscript"> </p>
+        </div>
+
+        <div class="controls">
+            <button class="control-btn" id="startBtn" onclick="startConversation()" disabled>Start Conversation</button>
+            <button class="control-btn" id="endBtn" onclick="endInterview()" disabled>End Interview</button>
+        </div>
+    </div>
+
+    <script>
+        const socket = io();
+        
+        // DOM Elements
+        const setupOverlay = document.getElementById('setupOverlay');
+        const interviewChamber = document.getElementById('interviewChamber');
+        const avatarOrb = document.getElementById('avatarOrb');
+        const statusMessage = document.getElementById('statusMessage');
+        const speechTranscript = document.getElementById('speechTranscript');
+        const startBtn = document.getElementById('startBtn');
+        const endBtn = document.getElementById('endBtn');
+
+        // --- Event Listeners from Server ---
+        socket.on('avatar_speak', function(data) {
+            setAvatarState('speaking');
+            statusMessage.textContent = 'AI Interviewer is speaking...';
+            typewriter(speechTranscript, data.text);
+        });
+
+        socket.on('avatar_idle', function() {
+            setAvatarState('listening');
+            statusMessage.textContent = 'Listening for your response...';
+        });
+
+        socket.on('interview_ready', function(data) {
+            statusMessage.textContent = `Welcome! I'm ready to begin.`;
+            speechTranscript.textContent = `Click "Start Conversation" when you're ready.`;
+            startBtn.disabled = false;
+        });
+
+        socket.on('interview_started', function() {
+            statusMessage.textContent = 'Interview in progress...';
+            startBtn.disabled = true;
+            endBtn.disabled = false;
+        });
+
+        socket.on('interview_ended', function() {
+            setAvatarState('idle'); // A neutral, non-breathing state
+            statusMessage.textContent = 'Interview Completed';
+            speechTranscript.textContent = 'Thank you for your time. You may now close this window.';
+            startBtn.disabled = true;
+            endBtn.disabled = true;
+        });
+        
+        socket.on('error', function(data) {
+            setAvatarState('idle');
+            statusMessage.textContent = "An error occurred."
+            speechTranscript.textContent = data.message || "Please refresh and try again.";
+        })
+
+        // --- UI Control Functions ---
+        function setAvatarState(state) {
+            // state can be 'listening', 'speaking', or 'idle'
+            avatarOrb.className = 'ai-orb ' + state;
+        }
+
+        let typeInterval;
+        function typewriter(element, text) {
+            clearInterval(typeInterval);
+            let i = 0;
+            element.textContent = '';
+            typeInterval = setInterval(() => {
+                if (i < text.length) {
+                    element.textContent += text.charAt(i);
+                    i++;
+                } else {
+                    clearInterval(typeInterval);
+                }
+            }, 30); // Typing speed
+        }
+        
+        // --- Client-side Actions to Server ---
+        function startInterview() {
+            const name = document.getElementById('candidateName').value;
+            const jobTitle = document.getElementById('jobTitle').value;
+
+            if (!name.trim()) {
+                alert('Please enter your name.');
+                return;
+            }
+
+            // Hide setup, show interview chamber
+            setupOverlay.style.display = 'none';
+            interviewChamber.classList.add('visible');
+
+            // Send setup data to backend
+            socket.emit('setup_interview', {
+                candidate_name: name,
+                job_title: jobTitle
+            });
+        }
+
+        function startConversation() {
+            socket.emit('start_conversation');
+            statusMessage.textContent = 'Starting conversation...';
+            speechTranscript.textContent = '';
+        }
+
+        function endInterview() {
+            socket.emit('end_interview');
+            statusMessage.textContent = 'Ending interview...';
+        }
+        
+        // Initial state
+        setAvatarState('listening');
+
+    </script>
+</body>
+</html>
