@@ -1,0 +1,1404 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="HireAI - AI-powered interview and candidate screening platform">
+    <title>PeopleGPT Screening | HireAI</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Custom Styles -->
+    <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
+    <style>
+        /* Define --bg-primary-rgb for use in rgba() */
+        :root {
+            --bg-primary-rgb: 18, 18, 22; /* Corresponds to a dark background like #121216 */
+        }
+        
+        /* Enhanced aesthetic styles for background_check.html */
+        .screening-page {
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, var(--bg-primary) 100%);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        .screening-page::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 30% 20%, rgba(81, 207, 102, 0.08) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 80%, rgba(81, 207, 102, 0.06) 0%, transparent 50%);
+            pointer-events: none;
+        }
+        
+        .screening-header {
+            background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-secondary) 50%, var(--bg-card) 100%);
+            padding: 2rem 0;
+            border-bottom: 1px solid var(--border-primary);
+            position: relative;
+            z-index: 2;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        .screening-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 50% 100%, rgba(81, 207, 102, 0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        
+        .hero-title {
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-green) 50%, var(--text-primary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        
+        .screening-layout {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .screening-container {
+            background: linear-gradient(135deg, var(--bg-card), var(--bg-secondary));
+            border: 1px solid var(--border-primary);
+            border-radius: 16px;
+            padding: 3rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            transition: var(--transition-smooth);
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 3rem;
+        }
+        
+        .screening-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-green), transparent);
+            opacity: 0;
+            transition: var(--transition-smooth);
+        }
+        
+        .screening-container:hover::before {
+            opacity: 1;
+        }
+        
+        .screening-container:hover {
+            box-shadow: 0 12px 48px rgba(81, 207, 102, 0.15);
+        }
+        
+        .interview-section {
+            border-top: 1px solid var(--border-primary);
+            padding-top: 3rem;
+            text-align: center;
+        }
+        
+        .interview-section h4 {
+            margin-bottom: 2rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .interview-controls {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--bg-secondary), var(--bg-card));
+            border: 1px solid var(--border-primary);
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+        
+        .form-control {
+            background: linear-gradient(135deg, var(--bg-secondary), var(--bg-card));
+            border: 1px solid var(--border-primary);
+            border-radius: 12px;
+            padding: 0.75rem;
+            color: var(--text-primary);
+            transition: var(--transition-smooth);
+            min-width: 200px;
+        }
+        
+        .form-control:focus {
+            border-color: var(--accent-green);
+            box-shadow: 0 0 0 3px rgba(81, 207, 102, 0.15);
+            outline: none;
+        }
+        
+        .info-box {
+            background: linear-gradient(135deg, var(--bg-secondary), var(--bg-card));
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-primary);
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .candidate-match-item {
+            background: linear-gradient(135deg, var(--bg-card), var(--bg-secondary));
+            border: 1px solid var(--border-primary);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            transition: var(--transition-smooth);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .candidate-match-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(81, 207, 102, 0.1), transparent);
+            transition: var(--transition-smooth);
+        }
+        
+        .candidate-match-item::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent-green), #40c057, var(--accent-green));
+            opacity: 0;
+            transition: var(--transition-smooth);
+        }
+        
+        .candidate-match-item:hover::before {
+            left: 100%;
+        }
+        
+        .candidate-match-item:hover::after {
+            opacity: 1;
+        }
+        
+        .candidate-match-item:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 16px 48px rgba(81, 207, 102, 0.2);
+            border-color: var(--accent-green);
+        }
+        
+        .candidate-match-item h4 {
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+        
+        .candidate-match-item p {
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+        
+        .match-score {
+            font-weight: 700;
+            font-size: 1.2rem;
+            background: linear-gradient(135deg, var(--accent-green), #40c057);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .match-reasons {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-primary);
+        }
+        
+        .match-reasons h5 {
+            margin-top: 0;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+        
+        .match-reasons ul {
+            list-style: none;
+            padding-left: 0;
+            margin: 0;
+        }
+        
+        .match-reasons li {
+            margin-bottom: 0.75rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+        
+        .match-reasons li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--accent-green);
+            font-weight: bold;
+        }
+        
+        .loading-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, var(--bg-card), var(--bg-secondary));
+            border: 1px solid var(--border-primary);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--border-primary);
+            border-top: 4px solid var(--accent-green);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .results-header {
+            background: linear-gradient(135deg, var(--bg-card), var(--bg-secondary));
+            border: 1px solid var(--border-primary);
+            border-radius: 16px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            text-align: center;
+        }
+        
+        .results-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 3px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--accent-green), #40c057);
+            opacity: 0;
+            transition: var(--transition-smooth);
+        }
+        
+        .results-header:hover::before {
+            opacity: 1;
+        }
+        
+        .no-results-message {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, var(--bg-card), var(--bg-secondary));
+            border: 1px solid var(--border-primary);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        .no-results-message i {
+            font-size: 5rem;
+            background: linear-gradient(135deg, var(--text-muted), var(--accent-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1.5rem;
+            filter: drop-shadow(0 4px 8px rgba(81, 207, 102, 0.2));
+        }
+        
+        /* Full-Screen Modal Styles */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(8px);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease-in-out;
+        }
+        
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal-content {
+            background: linear-gradient(135deg, var(--bg-card), var(--bg-secondary));
+            border: 1px solid var(--border-primary);
+            border-radius: 20px;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(15px);
+            position: relative;
+            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
+            max-width: none;
+            max-height: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem 2rem;
+            box-sizing: border-box;
+        }
+        
+        .modal-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-green), #40c057, var(--accent-green));
+            opacity: 1;
+        }
+        
+        .modal-form-container {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+        
+        .modal-content h3 {
+            margin: 0 0 3rem 0;
+            color: var(--text-primary);
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-green) 50%, var(--text-primary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-align: center;
+        }
+        
+        .form-group {
+            margin-bottom: 2rem;
+        }
+        
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+        
+        .form-control {
+            background: linear-gradient(135deg, var(--bg-secondary), var(--bg-card));
+            border: 2px solid var(--border-primary);
+            border-radius: 12px;
+            padding: 1.25rem;
+            color: var(--text-primary);
+            transition: var(--transition-smooth);
+            width: 100%;
+            box-sizing: border-box;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .form-control:focus {
+            border-color: var(--accent-green);
+            box-shadow: 0 0 0 4px rgba(81, 207, 102, 0.15);
+            outline: none;
+            background: var(--bg-card);
+        }
+        
+        .form-control[rows] {
+            min-height: 150px;
+            resize: vertical;
+        }
+        
+        .modal-actions {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            margin-top: 3rem;
+            flex-wrap: wrap;
+        }
+        
+        .modal-close-btn {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            z-index: 10;
+        }
+        
+        .modal-close-btn:hover {
+            background: rgba(0, 0, 0, 0.8);
+            transform: scale(1.1);
+        }
+
+        /* START: AI INTERVIEW EXPERIENCE STYLES */
+
+        .widget-fullpage-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 1000;
+            background: var(--bg-primary);
+            overflow: hidden;
+            perspective: 1000px;
+        }
+
+        .widget-fullpage-container elevenlabs-convai {
+            width: 100% !important;
+            height: 100% !important;
+            opacity: 1; /* Keep widget element visible, but its internal UI will be hidden */
+            transition: opacity 0.5s ease-in-out;
+        }
+        
+        /* CRITICAL FIX: This hides the default widget UI parts we don't want */
+        .widget-fullpage-container elevenlabs-convai::part(button), /* Hides the initial floating bubble */
+        .widget-fullpage-container elevenlabs-convai::part(idle-container) /* Hides the "Start a call" screen */
+        {
+            display: none !important;
+        }
+
+        .ai-loading-experience {
+            position: absolute;
+            inset: 0;
+            z-index: 1002;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(var(--bg-primary-rgb), 0.5);
+            backdrop-filter: blur(10px);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease-out, visibility 0.5s;
+            padding: 2rem;
+            box-sizing: border-box;
+            pointer-events: none;
+        }
+
+        .ai-loading-experience.active {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: all;
+        }
+        
+        #particle-container {
+            position: absolute;
+            inset: 0;
+            background: 
+                radial-gradient(ellipse at center, rgba(81, 207, 102, 0.1) 0%, transparent 70%),
+                var(--bg-primary);
+            overflow: hidden;
+        }
+
+        #particle-container::after {
+            content: '';
+            position: absolute;
+            top: -200%;
+            left: -50%;
+            width: 200%;
+            height: 400%;
+            background-image: radial-gradient(circle, var(--accent-green) 1px, transparent 1.5px);
+            background-size: 30px 30px;
+            animation: move-particles 25s linear infinite;
+        }
+
+        @keyframes move-particles {
+            from { transform: translateY(0); }
+            to { transform: translateY(-50%); }
+        }
+
+        .ai-orb-container {
+            position: relative;
+            z-index: 1;
+            animation: fadeIn 1.5s ease-out;
+        }
+        
+        .ai-orb {
+            width: 200px;
+            height: 200px;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: rotate-orb 30s linear infinite;
+        }
+
+        .ai-orb-core {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 35%, #fff, rgba(81, 207, 102, 0.9) 40%, rgba(43, 138, 62, 0.7) 70%, transparent 100%);
+            box-shadow: 
+                0 0 20px rgba(81, 207, 102, 0.5),
+                0 0 40px rgba(81, 207, 102, 0.4),
+                0 0 80px rgba(81, 207, 102, 0.3),
+                inset 0 0 30px rgba(255, 255, 255, 0.3);
+            animation: pulsate-orb 4s ease-in-out infinite;
+        }
+
+        @keyframes rotate-orb {
+            0% { transform: rotateY(0deg) rotateX(5deg); }
+            100% { transform: rotateY(360deg) rotateX(5deg); }
+        }
+        
+        @keyframes pulsate-orb {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 20px rgba(81, 207, 102, 0.5), 0 0 40px rgba(81, 207, 102, 0.4), 0 0 80px rgba(81, 207, 102, 0.3), inset 0 0 30px rgba(255, 255, 255, 0.3); }
+            50% { transform: scale(1.05); box-shadow: 0 0 30px rgba(81, 207, 102, 0.7), 0 0 60px rgba(81, 207, 102, 0.6), 0 0 120px rgba(81, 207, 102, 0.4), inset 0 0 30px rgba(255, 255, 255, 0.3); }
+        }
+
+        .welcome-message {
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            font-weight: 400;
+            margin-top: 2rem;
+            text-align: center;
+            z-index: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            border-right: 2px solid rgba(255, 255, 255, 0.75);
+            max-width: 90%;
+            animation: fadeIn 1s 1s backwards,
+                       typing 3s steps(40, end) 1.5s,
+                       blink-caret .75s step-end infinite;
+        }
+
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: rgba(255, 255, 255, 0.75); }
+        }
+
+        .voice-visualization {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 50px;
+            margin-top: 1rem;
+            gap: 8px;
+            z-index: 1;
+            animation: fadeIn 1s 2s backwards;
+        }
+        .voice-bar {
+            width: 6px;
+            height: 5px;
+            background: var(--accent-green);
+            border-radius: 3px;
+            animation: voice-wave 1.5s ease-in-out infinite;
+        }
+        .voice-bar:nth-child(2) { animation-delay: 0.2s; }
+        .voice-bar:nth-child(3) { animation-delay: 0.4s; }
+        .voice-bar:nth-child(4) { animation-delay: 0.6s; }
+        .voice-bar:nth-child(5) { animation-delay: 0.8s; }
+
+        @keyframes voice-wave {
+            0%, 100% { transform: scaleY(1); }
+            50% { transform: scaleY(8); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* NEW: Need Help Start Call Button Styles */
+        .need-help-overlay {
+            position: absolute;
+            inset: 0;
+            z-index: 1003;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(var(--bg-primary-rgb), 0.95);
+            backdrop-filter: blur(15px);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease-out, visibility 0.5s;
+        }
+
+        .need-help-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .need-help-widget {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            animation: slideInFromBottom 0.6s ease-out;
+        }
+
+        @keyframes slideInFromBottom {
+            from { 
+                opacity: 0; 
+                transform: translateY(50px) scale(0.9); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0) scale(1); 
+            }
+        }
+
+        .need-help-avatar {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--accent-green), #40c057);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            box-shadow: 0 8px 25px rgba(81, 207, 102, 0.4);
+            animation: gentle-bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes gentle-bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .need-help-message {
+            background: linear-gradient(135deg, var(--bg-card), var(--bg-secondary));
+            border: 1px solid var(--border-primary);
+            border-radius: 20px;
+            padding: 1rem 1.5rem;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            font-weight: 500;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            position: relative;
+            max-width: 250px;
+            text-align: center;
+        }
+
+        .need-help-message::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-bottom: 8px solid var(--border-primary);
+        }
+
+        .need-help-message::after {
+            content: '';
+            position: absolute;
+            top: -7px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 7px solid transparent;
+            border-right: 7px solid transparent;
+            border-bottom: 7px solid var(--bg-card);
+        }
+
+        .start-call-btn {
+            background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+            color: white;
+            border: 2px solid #333;
+            border-radius: 25px;
+            padding: 0.75rem 2rem;
+            font-size: 1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            margin-top: 0.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .start-call-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .start-call-btn:hover::before {
+            left: 100%;
+        }
+
+        .start-call-btn:hover {
+            background: linear-gradient(135deg, #2a2a2a, #3a3a3a);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+            border-color: var(--accent-green);
+        }
+
+        .start-call-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .call-icon {
+            width: 20px;
+            height: 20px;
+            background: var(--accent-green);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 10px;
+        }
+        
+        /* END: AI INTERVIEW EXPERIENCE STYLES */
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-green), #40c057);
+            color: var(--bg-primary);
+            border: 1px solid var(--accent-green);
+            position: relative;
+            overflow: hidden;
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 12px;
+            min-width: 200px;
+        }
+        
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: var(--transition-smooth);
+        }
+        
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #40c057, #2b8a3e);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(81, 207, 102, 0.4);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--bg-secondary), var(--bg-card));
+            color: var(--text-secondary);
+            border: 1px solid var(--border-primary);
+            transition: var(--transition-smooth);
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 12px;
+            min-width: 200px;
+        }
+        
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, var(--bg-card), var(--bg-secondary));
+            color: var(--text-primary);
+            transform: translateY(-2px);
+        }
+        
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            border-radius: 8px;
+            min-width: auto;
+        }
+        
+        .floating-elements {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .floating-dot {
+            position: absolute;
+            background: var(--accent-green);
+            border-radius: 50%;
+            opacity: 0.1;
+            animation: float-screening 16s ease-in-out infinite;
+        }
+        
+        .floating-dot:nth-child(1) { width: 12px; height: 12px; top: 25%; left: 20%; animation-delay: 0s; }
+        .floating-dot:nth-child(2) { width: 16px; height: 16px; top: 65%; right: 25%; animation-delay: 5s; }
+        .floating-dot:nth-child(3) { width: 10px; height: 10px; bottom: 35%; left: 70%; animation-delay: 10s; }
+        .floating-dot:nth-child(4) { width: 8px; height: 8px; top: 45%; left: 85%; animation-delay: 7s; }
+        
+        @keyframes float-screening {
+            0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.1; }
+            50% { transform: translateY(-40px) rotate(180deg); opacity: 0.3; }
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .ai-orb { width: 150px; height: 150px; }
+            .welcome-message { font-size: 1.2rem; }
+            .navbar-toggle { display: block !important; position: absolute; right: 1rem; top: 1rem; background: transparent; border: none; color: var(--text-primary); font-size: 1.5rem; cursor: pointer; z-index: 100; }
+            .navbar-nav { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: var(--bg-primary); flex-direction: column; justify-content: center; align-items: center; z-index: 99; }
+            .navbar-nav.active { display: flex; }
+            .navbar-nav .nav-link { font-size: 1.25rem; margin: 0.5rem 0; }
+            .screening-layout { padding: 0 1rem; }
+            .screening-container { padding: 2rem 1.5rem; }
+            .screening-header { padding: 2rem 0; }
+            .candidate-match-item { padding: 1.5rem; }
+            .modal-content { padding: 2rem 1rem; }
+            .modal-content h3 { font-size: 2rem; margin-bottom: 2rem; }
+            .modal-close-btn { top: 1rem; right: 1rem; width: 40px; height: 40px; }
+            .modal-actions { flex-direction: column; align-items: center; }
+            .btn-primary, .btn-secondary { width: 100%; max-width: 300px; }
+            .interview-controls { flex-direction: column; align-items: stretch; gap: 1rem; }
+            .interview-controls > * { width: 100%; }
+            .need-help-avatar { width: 50px; height: 50px; font-size: 20px; }
+            .need-help-message { max-width: 200px; font-size: 0.9rem; }
+            .start-call-btn { padding: 0.6rem 1.5rem; font-size: 0.9rem; }
+        }
+        
+        @media (max-width: 480px) {
+            .ai-orb { width: 120px; height: 120px; }
+            .welcome-message { font-size: 1rem; }
+            .modal-content { padding: 1.5rem 1rem; }
+            .form-control { padding: 1rem; }
+            .modal-content h3 { font-size: 1.75rem; }
+            .need-help-message { font-size: 0.85rem; padding: 0.75rem 1rem; }
+        }
+        
+        .animate-fadeInUp, .animate-fadeInLeft {
+            opacity: 1;
+            transform: translateY(0);
+            transition: all 0.6s ease-out;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="main-wrapper screening-page">
+        <div class="floating-elements">
+            <div class="floating-dot"></div>
+            <div class="floating-dot"></div>
+            <div class="floating-dot"></div>
+            <div class="floating-dot"></div>
+        </div>
+        
+        <nav class="navbar">
+            <div class="navbar-container">
+                <a href="/" class="navbar-brand">
+                    <i class="fas fa-brain icon"></i> HireAI
+                </a>
+                <ul class="navbar-nav">
+                    <li><a href="/" class="nav-link" data-page="home">Home</a></li>
+                    <li><a href="/upload" class="nav-link" data-page="upload">Upload Resume</a></li>
+                    <li><a href="/candidates" class="nav-link" data-page="candidates">View Candidates</a></li>
+                    <li><a href="/search" class="nav-link" data-page="search">Search Candidates</a></li>
+                    <li><a href="/outreach" class="nav-link" data-page="outreach">Personalized Outreach</a></li>
+                    <li><a href="/analytics" class="nav-link" data-page="analytics">Analytics</a></li>
+                    <li><a href="/background_check" class="nav-link active" data-page="background_check">AI Screening</a></li>
+                </ul>
+                <button class="navbar-toggle" id="navbar-toggle" style="display: none;">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </nav>
+
+        <div class="screening-header">
+            <div class="main-container">
+                <div class="centered-content animate-fadeInUp">
+                    <h1 class="hero-title mb-3">
+                        <i class="fas fa-robot icon-large"></i> AI Interview & Candidate Screening
+                    </h1>
+                    <p class="hero-subtitle">
+                        Conduct AI-powered interviews and find the best candidates using natural language queries
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-container" id="mainContainer">
+            <div class="screening-layout">
+                <div class="animate-fadeInUp">
+                    <div class="screening-container">
+                        <div class="interview-section">
+                            <h4>
+                                <i class="fas fa-microphone icon"></i> AI Interview Setup
+                            </h4>
+                            <div class="interview-controls">
+                                <button id="setupInterviewBtn" class="btn btn-primary">
+                                    <i class="fas fa-cog icon"></i> Setup Interview
+                                </button>
+                                <button id="toggleWidgetBtn" class="btn btn-secondary">
+                                    <i class="fas fa-expand icon"></i> Start Interview
+                                </button>
+                            </div>
+                            <div class="info-box">
+                                <small class="text-muted">
+                                    <i class="fas fa-info-circle icon"></i>
+                                    Use natural language to describe your ideal candidate. The AI will analyze and match against uploaded resumes.
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="animate-fadeInUp">
+                    <div id="loadingIndicator" class="loading-container" style="display: none;">
+                        <div class="spinner"></div>
+                        <p class="text-secondary">Searching and analyzing candidates...</p>
+                    </div>
+                    <div id="resultsSection" style="display: none;">
+                        <div class="results-header">
+                            <h3 class="mb-0">
+                                <i class="fas fa-users icon"></i> 
+                                Matching Candidates (<span id="totalFound">0</span>)
+                            </h3>
+                        </div>
+                        <ul id="candidatesList" class="results-list" style="list-style: none; padding: 0;"></ul>
+                    </div>
+                    <div id="noResultsMessage" class="no-results-message" style="display: none;">
+                        <i class="fas fa-users-slash"></i>
+                        <h3>No Candidates Found</h3>
+                        <p>Try a different query or <a href="/upload" style="color: var(--accent-green);">upload more resumes</a>.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="interviewSetupModal" class="modal">
+            <div class="modal-content">
+                <button class="modal-close-btn" id="cancelSetupBtn">
+                    <i class="fas fa-times"></i>
+                </button>
+                <h3>
+                    <i class="fas fa-microphone icon"></i> Setup AI Interview
+                </h3>
+                <div class="modal-form-container">
+                    <div class="form-group">
+                        <label class="form-label">Candidate Name:</label>
+                        <input type="text" id="candidateName" class="form-control"
+                            placeholder="Enter candidate name">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Job Description:</label>
+                        <textarea id="interviewJobDesc" class="form-control" rows="6"
+                            placeholder="Enter job description for tailored interview questions..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Voice Selection:</label>
+                        <select id="voiceSelect" class="form-control">
+                            <option value="21m00Tcm4TlvDq8ikWAM">Default Voice</option>
+                        </select>
+                    </div>
+                    <div class="modal-actions">
+                        <button id="createAgentBtn" class="btn btn-primary">
+                            <i class="fas fa-robot icon"></i> Create Interview Agent
+                        </button>
+                        <button class="btn btn-secondary" onclick="document.getElementById('interviewSetupModal').classList.remove('active')">
+                            <i class="fas fa-times icon"></i> Cancel
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="widget-fullpage-container" id="widgetContainer" style="display: none;">
+            <!-- AI Loading Experience (shows when interview is starting) -->
+            <div class="ai-loading-experience" id="aiLoadingExperience">
+                <div id="particle-container"></div>
+                <div class="ai-orb-container">
+                    <div class="ai-orb">
+                        <div class="ai-orb-core"></div>
+                    </div>
+                </div>
+                <h2 class="welcome-message" id="welcomeMessage"></h2>
+                <div class="voice-visualization">
+                    <div class="voice-bar"></div>
+                    <div class="voice-bar"></div>
+                    <div class="voice-bar"></div>
+                    <div class="voice-bar"></div>
+                    <div class="voice-bar"></div>
+                </div>
+            </div>
+
+            
+            <audio id="entryChime" src="https://cdn.pixabay.com/audio/2022/11/07/audio_a7a39e87b1.mp3" preload="auto"></audio>
+            
+            <div style="position: absolute; top: 20px; right: 20px; z-index: 1003;">
+                <button id="closeWidgetBtn" class="btn btn-secondary"
+                    style="background: rgba(0,0,0,0.7); color: white; border: none; padding: 0.5rem 1rem; border-radius: 8px;">
+                    <i class="fas fa-times"></i> Close Interview
+                </button>
+            </div>
+            <div style="width: 100%; height: 100%;">
+                <elevenlabs-convai agent-id=""></elevenlabs-convai>
+            </div>
+        </div>
+
+        <script src="https://unpkg.com/@elevenlabs/convai-widget-embed" async type="text/javascript"></script>
+
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <i class="fas fa-brain icon"></i> HireAI
+                </div>
+                <p class="footer-text">
+                    Built with ❤️ by <strong>Team Seeds! 🌱</strong><br>
+                    Revolutionizing Recruitment with AI
+                </p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // DOM Elements
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            const resultsSection = document.getElementById('resultsSection');
+            const totalFound = document.getElementById('totalFound');
+            const candidatesList = document.getElementById('candidatesList');
+            const noResultsMessage = document.getElementById('noResultsMessage');
+            const toggleWidgetBtn = document.getElementById('toggleWidgetBtn');
+            const closeWidgetBtn = document.getElementById('closeWidgetBtn');
+            const widgetContainer = document.getElementById('widgetContainer');
+            const mainContainer = document.getElementById('mainContainer');
+            const setupInterviewBtn = document.getElementById('setupInterviewBtn');
+            const interviewSetupModal = document.getElementById('interviewSetupModal');
+            const cancelSetupBtn = document.getElementById('cancelSetupBtn');
+            const createAgentBtn = document.getElementById('createAgentBtn');
+            const candidateName = document.getElementById('candidateName');
+            const interviewJobDesc = document.getElementById('interviewJobDesc');
+            const voiceSelect = document.getElementById('voiceSelect');
+            const aiLoadingExperience = document.getElementById('aiLoadingExperience');
+            const welcomeMessage = document.getElementById('welcomeMessage');
+            const entryChime = document.getElementById('entryChime');
+            const convaiWidget = document.querySelector('elevenlabs-convai');
+            // MODIFIED: We no longer need the 'needHelpOverlay' or its button
+            // const needHelpOverlay = document.getElementById('needHelpOverlay');
+            // const startCallBtn = document.getElementById('startCallBtn');
+
+            // State
+            let currentAgentId = null;
+            let currentSessionId = null;
+
+            // Load initial data
+            loadAvailableVoices();
+            
+            // --- CORE LOGIC FOR THE IMMERSIVE EXPERIENCE ---
+
+            // MODIFIED: This function now directly starts the interview.
+            function openFullscreenWidget() {
+                if (!currentAgentId) {
+                    alert('Please set up an interview agent first!');
+                    return;
+                }
+
+                // Hide main page, show the full-screen container
+                mainContainer.style.display = 'none';
+                document.body.style.overflow = 'hidden';
+                widgetContainer.style.display = 'block';
+
+                // Update and reset the welcome message animation
+                const name = candidateName.value.trim() || 'there';
+                welcomeMessage.textContent = `Hello ${name}, connecting to your AI Interview...`;
+                welcomeMessage.style.animation = 'none';
+                welcomeMessage.offsetHeight;
+                welcomeMessage.style.animation = '';
+
+                // Show our custom loading screen
+                aiLoadingExperience.classList.add('active');
+                entryChime.play().catch(e => console.error("Chime play failed:", e));
+
+                // Log the session start on our backend
+                startInterviewSession();
+
+                // Directly try to start the call!
+                if (convaiWidget && typeof convaiWidget.startCall === 'function') {
+                    console.log("Programmatically starting the interview directly...");
+                    convaiWidget.startCall();
+                } else {
+                    console.error("convaiWidget.startCall() method not found. Is the widget loaded?");
+                    alert("Error: Could not start the interview. Please try refreshing the page.");
+                    closeFullscreenWidget(); // Go back to the main view if it fails
+                }
+            }
+
+            function closeFullscreenWidget() {
+                widgetContainer.style.display = 'none';
+                mainContainer.style.display = 'block';
+                document.body.style.overflow = 'auto';
+                aiLoadingExperience.classList.remove('active');
+                
+                // End the call if it's active
+                if (convaiWidget && typeof convaiWidget.endCall === 'function') {
+                    convaiWidget.endCall();
+                }
+
+                // End the backend session logging
+                if (currentSessionId) {
+                    endInterviewSession();
+                }
+            }
+
+            // MODIFIED: This function is no longer needed as we call startCall() directly.
+            /*
+            function startActualCall() {
+                needHelpOverlay.classList.remove('active');
+                if (convaiWidget && typeof convaiWidget.startCall === 'function') {
+                    console.log("Programmatically starting the interview...");
+                    convaiWidget.startCall();
+                } else {
+                    console.error("convaiWidget.startCall() method not found.");
+                }
+            }
+            */
+            
+            // --- BACKEND COMMUNICATION AND OTHER FUNCTIONS ---
+            
+            async function loadAvailableVoices() {
+                try {
+                    const response = await fetch('/api/ai_interview/voices');
+                    const data = await response.json();
+                    if (data.success && data.voices) {
+                        voiceSelect.innerHTML = '';
+                        data.voices.forEach(voice => {
+                            const option = document.createElement('option');
+                            option.value = voice.voice_id;
+                            option.textContent = `${voice.name} (${voice.category})`;
+                            voiceSelect.appendChild(option);
+                        });
+                    }
+                } catch (error) {
+                    console.error('Error loading voices:', error);
+                }
+            }
+
+            function showInterviewSetup() {
+                interviewSetupModal.classList.add('active');
+            }
+
+            function hideInterviewSetup() {
+                interviewSetupModal.classList.remove('active');
+            }
+
+            async function createInterviewAgent() {
+                const candidateNameValue = candidateName.value.trim();
+                const jobDesc = interviewJobDesc.value.trim();
+                const selectedVoice = voiceSelect.value;
+
+                if (!candidateNameValue || !jobDesc) {
+                    alert('Please enter both candidate name and job description.');
+                    return;
+                }
+                createAgentBtn.disabled = true;
+                createAgentBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating Agent...';
+                try {
+                    const response = await fetch('/api/ai_interview/create_agent', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            job_description: jobDesc,
+                            agent_name: "Interview Assistant",
+                            voice_id: selectedVoice
+                        })
+                    });
+                    const data = await response.json();
+                    if (data.success) {
+                        currentAgentId = data.agent_id;
+                        convaiWidget.setAttribute('agent-id', currentAgentId);
+                        hideInterviewSetup();
+                        toggleWidgetBtn.innerHTML = '<i class="fas fa-microphone"></i> Start Interview';
+                        toggleWidgetBtn.disabled = false;
+                        alert(`Interview agent created successfully! Ready to start interview with ${candidateNameValue}.`);
+                    } else {
+                        alert(`Error creating agent: ${data.error}`);
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Failed to create interview agent. Please try again.');
+                } finally {
+                    createAgentBtn.disabled = false;
+                    createAgentBtn.innerHTML = '<i class="fas fa-robot icon"></i> Create Interview Agent';
+                }
+            }
+
+            async function startInterviewSession() {
+                if (!currentAgentId) return;
+                try {
+                    const response = await fetch('/api/ai_interview/start_session', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            agent_id: currentAgentId,
+                            candidate_name: candidateName.value.trim() || 'Anonymous'
+                        })
+                    });
+                    const data = await response.json();
+                    if (data.success) {
+                        currentSessionId = data.session_info.session_id;
+                        console.log('Backend session started:', currentSessionId);
+                    }
+                } catch (error) { console.error('Error starting session:', error); }
+            }
+
+            async function endInterviewSession() {
+                if (!currentSessionId) return;
+                try {
+                    const response = await fetch('/api/ai_interview/end_session', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ session_id: currentSessionId })
+                    });
+                    const data = await response.json();
+                    if (data.success) {
+                        console.log('Interview session ended:', data.session_summary);
+                        currentSessionId = null;
+                    }
+                } catch (error) { console.error('Error ending session:', error); }
+            }
+            
+            function displayMatchedCandidates(candidates) {
+                // This function remains the same.
+                candidatesList.innerHTML = '';
+                if (candidates && candidates.length > 0) {
+                    candidates.forEach((candidate) => {
+                        const listItem = document.createElement('li');
+                        listItem.className = 'candidate-match-item animate-fadeInUp';
+                        listItem.innerHTML = `<h4>${candidate.name||'N/A'}</h4><p><i class="fas fa-envelope icon"></i> ${candidate.email||'N/A'} | <i class="fas fa-map-marker-alt icon"></i> ${candidate.location||'N/A'} | <i class="fas fa-calendar icon"></i> ${candidate.experience_years||0} Years Experience</p><p>Match Score: <span class="match-score">${candidate.match_score||0}%</span></p><div class="match-reasons"><h5><i class="fas fa-check-circle icon"></i> Match Reasons:</h5><ul>${candidate.match_reasons&&Array.isArray(candidate.match_reasons)?candidate.match_reasons.map(reason=>`<li>${reason}</li>`).join(''):'<li>No reasons provided.</li>'}</ul></div><div style="margin-top:1.5rem;display:flex;gap:0.75rem;flex-wrap:wrap;"><button class="btn btn-primary btn-sm interview-candidate-btn" data-candidate="${encodeURIComponent(JSON.stringify(candidate))}"><i class="fas fa-microphone"></i> Interview</button><button class="btn btn-secondary btn-sm" onclick="window.open('/candidate_detail?name=${encodeURIComponent(candidate.name)}','_blank')"><i class="fas fa-eye"></i> Details</button></div>`;
+                        candidatesList.appendChild(listItem);
+                    });
+                    document.querySelectorAll('.interview-candidate-btn').forEach(btn => {
+                        btn.addEventListener('click', function () {
+                            const candidateData = JSON.parse(decodeURIComponent(this.dataset.candidate));
+                            candidateName.value = candidateData.name || 'Anonymous';
+                            showInterviewSetup();
+                        });
+                    });
+                    resultsSection.style.display = 'block';
+                    noResultsMessage.style.display = 'none';
+                    totalFound.textContent = candidates.length;
+                } else {
+                    resultsSection.style.display = 'none';
+                    noResultsMessage.style.display = 'block';
+                    totalFound.textContent = '0';
+                }
+            }
+            
+            // --- EVENT LISTENERS ---
+
+            if (setupInterviewBtn) setupInterviewBtn.addEventListener('click', showInterviewSetup);
+            if (cancelSetupBtn) cancelSetupBtn.addEventListener('click', hideInterviewSetup);
+            if (createAgentBtn) createAgentBtn.addEventListener('click', createInterviewAgent);
+            // MODIFIED: The event listener for startCallBtn is no longer needed.
+            // if (startCallBtn) startCallBtn.addEventListener('click', startActualCall);
+            
+            interviewSetupModal.addEventListener('click', (e) => { if (e.target === interviewSetupModal) hideInterviewSetup(); });
+            document.addEventListener('keydown', (e) => { 
+                if (e.key === 'Escape') { 
+                    if (interviewSetupModal.classList.contains('active')) {
+                        hideInterviewSetup(); 
+                    } else if (widgetContainer.style.display === 'block') {
+                        closeFullscreenWidget(); 
+                    }
+                } 
+            });
+
+            if (toggleWidgetBtn) toggleWidgetBtn.addEventListener('click', openFullscreenWidget);
+            if (closeWidgetBtn) closeWidgetBtn.addEventListener('click', closeFullscreenWidget);
+
+            // NEW: Add event listeners to the widget for a better user experience.
+            if (convaiWidget) {
+                // This event fires when the call successfully connects and the AI is ready.
+                convaiWidget.addEventListener('call-started', () => {
+                    console.log('Event: call-started received. Hiding loading experience.');
+                    // Hide our custom loading overlay, the widget's UI is now visible.
+                    aiLoadingExperience.classList.remove('active');
+                });
+
+                // This event fires when the user ends the call from within the widget's UI.
+                convaiWidget.addEventListener('call-ended', () => {
+                    console.log('Event: call-ended received. Closing fullscreen widget.');
+                    // Automatically close our fullscreen view to return to the main page.
+                    closeFullscreenWidget(); 
+                });
+            }
+        });
+    </script>
+</body>
+</html>
