@@ -1,0 +1,2660 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="HireAI - AI-powered interview and candidate screening platform">
+    <title>PeopleGPT Screening | HireAI</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Custom Styles -->
+    <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
+    <style>
+        /* Enhanced aesthetic styles for background_check.html */
+        .screening-page {
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, var(--bg-primary) 100%);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        .screening-page::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 30% 20%, rgba(81, 207, 102, 0.08) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 80%, rgba(81, 207, 102, 0.06) 0%, transparent 50%);
+            pointer-events: none;
+        }
+        
+        .screening-header {
+            background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-secondary) 50%, var(--bg-card) 100%);
+            padding: 2rem 0;
+            border-bottom: 1px solid var(--border-primary);
+            position: relative;
+            z-index: 2;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        .screening-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 50% 100%, rgba(81, 207, 102, 0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        
+        .hero-title {
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-green) 50%, var(--text-primary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        
+        .screening-layout {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .screening-container {
+            background: linear-gradient(135deg, var(--bg-card), var(--bg-secondary));
+            border: 1px solid var(--border-primary);
+            border-radius: 16px;
+            padding: 3rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            transition: var(--transition-smooth);
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 3rem;
+        }
+        
+        .screening-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-green), transparent);
+            opacity: 0;
+            transition: var(--transition-smooth);
+        }
+        
+        .screening-container:hover::before {
+            opacity: 1;
+        }
+        
+        .screening-container:hover {
+            box-shadow: 0 12px 48px rgba(81, 207, 102, 0.15);
+        }
+        
+        .interview-section {
+            border-top: 1px solid var(--border-primary);
+            padding-top: 3rem;
+            text-align: center;
+        }
+        
+        .interview-section h4 {
+            margin-bottom: 2rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .interview-controls {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--bg-secondary), var(--bg-card));
+            border: 1px solid var(--border-primary);
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+        
+        .form-control {
+            background: linear-gradient(135deg, var(--bg-secondary), var(--bg-card));
+            border: 1px solid var(--border-primary);
+            border-radius: 12px;
+            padding: 0.75rem;
+            color: var(--text-primary);
+            transition: var(--transition-smooth);
+            min-width: 200px;
+        }
+        
+        .form-control:focus {
+            border-color: var(--accent-green);
+            box-shadow: 0 0 0 3px rgba(81, 207, 102, 0.15);
+            outline: none;
+        }
+        
+        .info-box {
+            background: linear-gradient(135deg, var(--bg-secondary), var(--bg-card));
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-primary);
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .candidate-match-item {
+            background: linear-gradient(135deg, var(--bg-card), var(--bg-secondary));
+            border: 1px solid var(--border-primary);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            transition: var(--transition-smooth);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .candidate-match-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(81, 207, 102, 0.1), transparent);
+            transition: var(--transition-smooth);
+        }
+        
+        .candidate-match-item::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent-green), #40c057, var(--accent-green));
+            opacity: 0;
+            transition: var(--transition-smooth);
+        }
+        
+        .candidate-match-item:hover::before {
+            left: 100%;
+        }
+        
+        .candidate-match-item:hover::after {
+            opacity: 1;
+        }
+        
+        .candidate-match-item:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 16px 48px rgba(81, 207, 102, 0.2);
+            border-color: var(--accent-green);
+        }
+        
+        .candidate-match-item h4 {
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+        
+        .candidate-match-item p {
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+        
+        .match-score {
+            font-weight: 700;
+            font-size: 1.2rem;
+            background: linear-gradient(135deg, var(--accent-green), #40c057);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .match-reasons {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-primary);
+        }
+        
+        .match-reasons h5 {
+            margin-top: 0;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+        
+        .match-reasons ul {
+            list-style: none;
+            padding-left: 0;
+            margin: 0;
+        }
+        
+        .match-reasons li {
+            margin-bottom: 0.75rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+        
+        .match-reasons li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--accent-green);
+            font-weight: bold;
+        }
+        
+        .loading-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, var(--bg-card), var(--bg-secondary));
+            border: 1px solid var(--border-primary);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--border-primary);
+            border-top: 4px solid var(--accent-green);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .results-header {
+            background: linear-gradient(135deg, var(--bg-card), var(--bg-secondary));
+            border: 1px solid var(--border-primary);
+            border-radius: 16px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            text-align: center;
+        }
+        
+        .results-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 3px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--accent-green), #40c057);
+            opacity: 0;
+            transition: var(--transition-smooth);
+        }
+        
+        .results-header:hover::before {
+            opacity: 1;
+        }
+        
+        .no-results-message {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, var(--bg-card), var(--bg-secondary));
+            border: 1px solid var(--border-primary);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        .no-results-message i {
+            font-size: 5rem;
+            background: linear-gradient(135deg, var(--text-muted), var(--accent-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1.5rem;
+            filter: drop-shadow(0 4px 8px rgba(81, 207, 102, 0.2));
+        }
+        
+        /* Full-Screen Modal Styles */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(8px);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease-in-out;
+        }
+        
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal-content {
+            background: linear-gradient(135deg, var(--bg-card), var(--bg-secondary));
+            border: 1px solid var(--border-primary);
+            border-radius: 20px;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(15px);
+            position: relative;
+            overflow: hidden;
+            
+            /* Full-screen dimensions */
+            width: 100vw;
+            height: 100vh;
+            max-width: none;
+            max-height: none;
+            
+            /* Center content */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            
+            /* Responsive padding */
+            padding: 4rem 2rem;
+            box-sizing: border-box;
+        }
+        
+        .modal-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-green), #40c057, var(--accent-green));
+            opacity: 1;
+        }
+        
+        .modal-form-container {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+        
+        .modal-content h3 {
+            margin: 0 0 3rem 0;
+            color: var(--text-primary);
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-green) 50%, var(--text-primary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-align: center;
+        }
+        
+        .form-group {
+            margin-bottom: 2rem;
+        }
+        
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+        
+        .form-control {
+            background: linear-gradient(135deg, var(--bg-secondary), var(--bg-card));
+            border: 2px solid var(--border-primary);
+            border-radius: 12px;
+            padding: 1.25rem;
+            color: var(--text-primary);
+            transition: var(--transition-smooth);
+            width: 100%;
+            box-sizing: border-box;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .form-control:focus {
+            border-color: var(--accent-green);
+            box-shadow: 0 0 0 4px rgba(81, 207, 102, 0.15);
+            outline: none;
+            background: var(--bg-card);
+        }
+        
+        .form-control[rows] {
+            min-height: 150px;
+            resize: vertical;
+        }
+        
+        .modal-actions {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            margin-top: 3rem;
+            flex-wrap: wrap;
+        }
+        
+        .modal-close-btn {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            z-index: 10;
+        }
+        
+        .modal-close-btn:hover {
+            background: rgba(0, 0, 0, 0.8);
+            transform: scale(1.1);
+        }
+        
+        .widget-fullpage-container {
+            position: fixed;
+            top: 70px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 1000;
+            background: var(--bg-primary);
+        }
+        
+        .widget-fullpage-container elevenlabs-convai {
+            width: 100% !important;
+            height: 100% !important;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-green), #40c057);
+            color: var(--bg-primary);
+            border: 1px solid var(--accent-green);
+            position: relative;
+            overflow: hidden;
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 12px;
+            min-width: 200px;
+        }
+        
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: var(--transition-smooth);
+        }
+        
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #40c057, #2b8a3e);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(81, 207, 102, 0.4);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--bg-secondary), var(--bg-card));
+            color: var(--text-secondary);
+            border: 1px solid var(--border-primary);
+            transition: var(--transition-smooth);
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 12px;
+            min-width: 200px;
+        }
+        
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, var(--bg-card), var(--bg-secondary));
+            color: var(--text-primary);
+            transform: translateY(-2px);
+        }
+        
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            border-radius: 8px;
+            min-width: auto;
+        }
+        
+        .floating-elements {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .floating-dot {
+            position: absolute;
+            background: var(--accent-green);
+            border-radius: 50%;
+            opacity: 0.1;
+            animation: float-screening 16s ease-in-out infinite;
+        }
+        
+        .floating-dot:nth-child(1) {
+            width: 12px;
+            height: 12px;
+            top: 25%;
+            left: 20%;
+            animation-delay: 0s;
+        }
+        
+        .floating-dot:nth-child(2) {
+            width: 16px;
+            height: 16px;
+            top: 65%;
+            right: 25%;
+            animation-delay: 5s;
+        }
+        
+        .floating-dot:nth-child(3) {
+            width: 10px;
+            height: 10px;
+            bottom: 35%;
+            left: 70%;
+            animation-delay: 10s;
+        }
+        
+        .floating-dot:nth-child(4) {
+            width: 8px;
+            height: 8px;
+            top: 45%;
+            left: 85%;
+            animation-delay: 7s;
+        }
+        
+        @keyframes float-screening {
+            0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.1; }
+            50% { transform: translateY(-40px) rotate(180deg); opacity: 0.3; }
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .navbar-toggle {
+                display: block !important;
+                position: absolute;
+                right: 1rem;
+                top: 1rem;
+                background: transparent;
+                border: none;
+                color: var(--text-primary);
+                font-size: 1.5rem;
+                cursor: pointer;
+                z-index: 100;
+            }
+            
+            .navbar-nav {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: var(--bg-primary);
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                z-index: 99;
+            }
+            
+            .navbar-nav.active {
+                display: flex;
+            }
+            
+            .navbar-nav .nav-link {
+                font-size: 1.25rem;
+                margin: 0.5rem 0;
+            }
+            
+            .screening-layout {
+                padding: 0 1rem;
+            }
+            
+            .screening-container {
+                padding: 2rem 1.5rem;
+            }
+            
+            .screening-header {
+                padding: 2rem 0;
+            }
+            
+            .candidate-match-item {
+                padding: 1.5rem;
+            }
+            
+            .modal-content {
+                padding: 2rem 1rem;
+            }
+            
+            .modal-content h3 {
+                font-size: 2rem;
+                margin-bottom: 2rem;
+            }
+            
+            .modal-close-btn {
+                top: 1rem;
+                right: 1rem;
+                width: 40px;
+                height: 40px;
+            }
+            
+            .modal-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn-primary,
+            .btn-secondary {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .interview-controls {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 1rem;
+            }
+            
+            .interview-controls > * {
+                width: 100%;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .modal-content {
+                padding: 1.5rem 1rem;
+            }
+            
+            .form-control {
+                padding: 1rem;
+            }
+            
+            .modal-content h3 {
+                font-size: 1.75rem;
+            }
+        }
+        
+        .animate-fadeInUp, .animate-fadeInLeft {
+            opacity: 1;
+            transform: translateY(0);
+            transition: all 0.6s ease-out;
+        }
+        /* Interview Full-Screen Styles */
+.widget-fullpage-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
+    background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, var(--bg-primary) 100%);
+    display: flex;
+    flex-direction: column;
+}
+
+.interview-header {
+    background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-secondary) 50%, var(--bg-card) 100%);
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid var(--border-primary);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    position: relative;
+    z-index: 1001;
+}
+
+.interview-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--accent-green), #40c057, var(--accent-green));
+}
+
+.interview-header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.interview-title {
+    margin: 0;
+    color: var(--text-primary);
+    background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-green) 50%, var(--text-primary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.close-interview-btn {
+    background: linear-gradient(135deg, var(--bg-secondary), var(--bg-card));
+    color: var(--text-secondary);
+    border: 1px solid var(--border-primary);
+    padding: 0.75rem 1.5rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border-radius: 8px;
+    transition: var(--transition-smooth);
+}
+
+.close-interview-btn:hover {
+    background: linear-gradient(135deg, var(--bg-card), var(--bg-secondary));
+    color: var(--text-primary);
+    transform: translateY(-2px);
+}
+
+.interview-content {
+    flex: 1;
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    overflow: hidden;
+}
+
+.camera-container {
+    width: 30%;
+    min-width: 280px;
+    max-width: 400px;
+    background: linear-gradient(135deg, var(--bg-card), var(--bg-secondary));
+    border: 1px solid var(--border-primary);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.camera-header {
+    background: linear-gradient(135deg, var(--bg-secondary), var(--bg-card));
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--border-primary);
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    text-align: center;
+}
+
+.camera-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent-green), transparent);
+    opacity: 0;
+    transition: var(--transition-smooth);
+}
+
+.camera-container:hover::before {
+    opacity: 1;
+}
+
+#cameraVideo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    background: var(--bg-secondary);
+    border-radius: 0 0 16px 16px;
+}
+
+.camera-status {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 1rem;
+    border-radius: 8px;
+    backdrop-filter: blur(10px);
+}
+
+.widget-container {
+    flex: 1;
+    background: linear-gradient(135deg, var(--bg-card), var(--bg-secondary));
+    border: 1px solid var(--border-primary);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    overflow: hidden;
+    position: relative;
+}
+
+.widget-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent-green), transparent);
+    opacity: 0;
+    transition: var(--transition-smooth);
+}
+
+.widget-container:hover::before {
+    opacity: 1;
+}
+
+.widget-container elevenlabs-convai {
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: 16px;
+}
+
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+    .interview-header {
+        padding: 1rem;
+    }
+    
+    .interview-header-content {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+    
+    .interview-title {
+        font-size: 1.25rem;
+    }
+    
+    .interview-content {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1rem;
+    }
+    
+    .camera-container {
+        width: 100%;
+        max-width: none;
+        height: 200px;
+        order: 1;
+    }
+    
+    .widget-container {
+        order: 2;
+        min-height: 400px;
+    }
+}
+
+@media (max-width: 480px) {
+    .interview-header {
+        padding: 0.75rem;
+    }
+    
+    .interview-title {
+        font-size: 1.1rem;
+    }
+    
+    .close-interview-btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.8rem;
+    }
+    
+    .camera-container {
+        height: 150px;
+    }
+    
+    .widget-container {
+        min-height: 350px;
+    }
+    
+    .interview-content {
+        padding: 0.5rem;
+    }
+}
+    /* Enhanced Interview Full-Screen Styles */
+.widget-fullpage-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
+    background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, var(--bg-primary) 100%);
+    display: flex;
+    flex-direction: column;
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    line-height: 1.25rem;
+}
+
+/* Enhanced Header */
+.interview-header {
+    background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-secondary) 50%, var(--bg-card) 100%);
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid var(--border-primary);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    position: relative;
+    z-index: 1001;
+}
+
+.interview-header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.header-spacer {
+    width: 140px; /* Same width as close button for perfect centering */
+}
+
+.interview-title {
+    margin: 0;
+    color: var(--text-primary);
+    background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-green) 50%, var(--text-primary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-size: 1.5rem;
+    font-weight: 600;
+    text-align: center;
+}
+
+.header-accent-line {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--accent-green), #40c057, var(--accent-green));
+}
+
+.close-interview-btn {
+    background: linear-gradient(135deg, var(--bg-secondary), var(--bg-card));
+    color: var(--text-secondary);
+    border: 1px solid var(--border-primary);
+    padding: 0.75rem 1.5rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border-radius: 12px;
+    transition: var(--transition-smooth);
+    min-width: 140px;
+}
+
+.close-interview-btn:hover {
+    background: linear-gradient(135deg, var(--bg-card), var(--bg-secondary));
+    color: var(--text-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(81, 207, 102, 0.15);
+}
+
+/* Three-Column Grid Layout */
+.interview-grid {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 2fr 1.5fr;
+    gap: 1rem;
+    padding: 1rem;
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Enhanced Panel Containers */
+.camera-panel,
+.transcript-panel,
+.widget-panel {
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    animation: fadeInPanel 0.3s ease forwards;
+}
+
+.camera-panel {
+    animation-delay: 0.1s;
+}
+
+.transcript-panel {
+    animation-delay: 0.2s;
+}
+
+.widget-panel {
+    animation-delay: 0.3s;
+}
+
+@keyframes fadeInPanel {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Enhanced Screening Container for Panels */
+.camera-container,
+.transcript-container,
+.widget-container {
+    background: linear-gradient(135deg, var(--bg-card), var(--bg-secondary));
+    border: 1px solid var(--border-primary);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    transition: var(--transition-smooth);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    position: relative;
+}
+
+.camera-container:hover,
+.transcript-container:hover,
+.widget-container:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 48px rgba(81, 207, 102, 0.2);
+}
+
+/* Panel Headers */
+.panel-header {
+    background: linear-gradient(135deg, var(--bg-secondary), var(--bg-card));
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border-primary);
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-green) 50%, var(--text-primary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.panel-header .icon {
+    font-size: 1.25rem;
+    color: var(--accent-green);
+    -webkit-text-fill-color: var(--accent-green);
+}
+
+.sticky-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: linear-gradient(135deg, var(--bg-secondary), var(--bg-card));
+}
+
+/* Enhanced Camera Feed */
+.camera-feed-wrapper {
+    flex: 1;
+    position: relative;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.camera-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent-green), transparent);
+}
+
+#cameraVideo {
+    width: 100%;
+    height: 100%;
+    max-height: 400px;
+    object-fit: cover;
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    border: 1px solid var(--border-primary);
+}
+
+.camera-status {
+    position: absolute;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    background: rgba(0, 0, 0, 0.8);
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--border-primary);
+}
+
+/* Enhanced Transcript Panel */
+.transcript-content {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.transcript-list {
+    flex: 1;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent-green) var(--bg-secondary);
+}
+
+.transcript-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.trans
+
+/* Professional Interview Header - 80px height */
+.interview-header-pro {
+    background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-secondary) 50%, var(--bg-card) 100%);
+    height: 80px;
+    padding: 0 2rem;
+    border-bottom: 1px solid var(--border-primary);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    position: relative;
+    z-index: 1001;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.interview-header-pro .interview-header-content {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    align-items: center;
+    max-width: 1600px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.header-brand {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.header-brand .icon {
+    color: var(--accent-green);
+    font-size: 1.5rem;
+}
+
+.header-center {
+    display: flex;
+    justify-content: center;
+}
+
+.interview-title-pro {
+    margin: 0;
+    background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-green) 50%, var(--text-primary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-size: 1.5rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.interview-title-pro .icon {
+    color: var(--accent-green);
+    -webkit-text-fill-color: var(--accent-green);
+}
+
+.header-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.close-interview-btn-pro {
+    background: linear-gradient(135deg, var(--accent-green), #40c057);
+    color: var(--bg-primary);
+    border: 1px solid var(--accent-green);
+    padding: 0.75rem 1.5rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border-radius: 12px;
+    transition: var(--transition-smooth);
+}
+
+.close-interview-btn-pro:hover {
+    background: linear-gradient(135deg, #40c057, #2b8a3e);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(81, 207, 102, 0.4);
+}
+
+/* Animated Progress Bar */
+.live-progress-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--bg-secondary);
+    overflow: hidden;
+}
+
+.progress-pulse {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-green), #40c057, var(--accent-green));
+    animation: progressPulse 3s ease-in-out infinite;
+}
+
+@keyframes progressPulse {
+    0%, 100% { transform: translateX(-100%); opacity: 0.7; }
+    50% { transform: translateX(100%); opacity: 1; }
+}
+
+/* Professional Grid Layout - Perfect Proportions */
+.interview-grid-pro {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 2fr 3fr 2fr;
+    gap: 1rem;
+    padding: 1rem;
+    max-width: 1600px;
+    margin: 0 auto;
+    width: 100%;
+    box-sizing: border-box;
+    height: calc(100vh - 80px);
+}
+
+/* Panel Entry Animations */
+.panel-entry {
+    opacity: 0;
+    transform: translateY(30px);
+    animation: panelSlideIn 0.6s ease forwards;
+}
+
+.camera-panel-pro {
+    animation-delay: 0.1s;
+}
+
+.transcript-panel-pro {
+    animation-delay: 0.2s;
+}
+
+.widget-panel-pro {
+    animation-delay: 0.3s;
+}
+
+@keyframes panelSlideIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Enhanced Panel Containers */
+.camera-container-pro,
+.transcript-container-pro,
+.widget-container-pro {
+    background: linear-gradient(135deg, var(--bg-card), var(--bg-secondary));
+    border: 1px solid var(--border-primary);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    transition: var(--transition-smooth);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    position: relative;
+}
+
+.camera-container-pro:hover,
+.transcript-container-pro:hover,
+.widget-container-pro:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 60px rgba(81, 207, 102, 0.25);
+}
+
+.camera-container-pro:hover::before,
+.transcript-container-pro:hover::before,
+.widget-container-pro:hover::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent-green), #40c057, var(--accent-green));
+    animation: accentPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes accentPulse {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+}
+
+/* Professional Panel Headers */
+.panel-header-pro {
+    background: linear-gradient(135deg, var(--bg-secondary), var(--bg-card));
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border-primary);
+    font-size: 1rem;
+    font-weight: 600;
+    background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-green) 50%, var(--text-primary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.panel-header-pro .icon {
+    font-size: 1.25rem;
+    color: var(--accent-green);
+    -webkit-text-fill-color: var(--accent-green);
+}
+
+.transcript-sticky {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: linear-gradient(135deg, var(--bg-secondary), var(--bg-card));
+}
+
+/* Enhanced Camera Viewport */
+.camera-viewport {
+    flex: 1;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+}
+
+.video-frame {
+    position: relative;
+    width: 100%;
+    height: 60%;
+    min-height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#cameraVideo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 12px;
+    border: 4px solid var(--accent-green);
+    transition: var(--transition-smooth);
+}
+
+.camera-glow-ring {
+    position: absolute;
+    top: -8px;
+    left: -8px;
+    right: -8px;
+    bottom: -8px;
+    border-radius: 16px;
+    background: linear-gradient(45deg, var(--accent-green), #40c057);
+    opacity: 0;
+    transition: var(--transition-smooth);
+    z-index: -1;
+}
+
+.video-frame:hover .camera-glow-ring,
+#cameraVideo:focus + .camera-glow-ring {
+    opacity: 0.3;
+    animation: glowPulse 2s ease-in-out infinite;
+}
+
+@keyframes glowPulse {
+    0%, 100% { transform: scale(1); opacity: 0.3; }
+    50% { transform: scale(1.02); opacity: 0.5; }
+}
+
+.camera-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-top: 1rem;
+}
+
+.camera-status-pro {
+    background: rgba(0, 0, 0, 0.8);
+    color: var(--text-primary);
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--border-primary);
+}
+
+.camera-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.control-btn {
+    background: linear-gradient(135deg, var(--bg-secondary), var(--bg-card));
+    color: var(--text-secondary);
+    border: 1px solid var(--border-primary);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+}
+
+.control-btn:hover {
+    background: linear-gradient(135deg, var(--accent-green), #40c057);
+    color: var(--bg-primary);
+    transform: scale(1.1);
+}
+
+/* Enhanced Transcript Area */
+.transcript-scroll-area {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.transcript-list-pro {
+    flex: 1;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent-green) var(--bg-secondary);
+}
+
+.transcript-list-pro::-webkit-scrollbar {
+    width: 4px;
+}
+
+.transcript-list-pro::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+}
+
+.transcript-list-pro::-webkit-scrollbar-thumb {
+    background: var(--accent-green);
+    border-radius: 2px;
+}
+
+.transcript-entry-pro {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border-primary);
+    transition: var(--transition-smooth);
+}
+
+.transcript-entry-pro:hover {
+    background: linear-gradient(135deg, var(--bg-secondary), var(--bg-card));
+}
+
+.entry-fade-in {
+    animation: entryFadeIn 0.4s ease forwards;
+}
+
+@keyframes entryFadeIn {
+    from { opacity: 0; transform: translateX(-20px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+.entry-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.speaker-label-pro {
+    font-weight: 600;
+}
+/* Waveform Viewport Container */
+.waveform-viewport {
+    flex: 1;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent-green) var(--bg-secondary);
+}
+
+.waveform-viewport::-webkit-scrollbar {
+    width: 4px;
+}
+
+.waveform-viewport::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+}
+
+.waveform-viewport::-webkit-scrollbar-thumb {
+    background: var(--accent-green);
+    border-radius: 2px;
+}
+
+/* Main Waveform Container */
+.waveform-container {
+    background: linear-gradient(135deg, var(--bg-secondary), var(--bg-card));
+    border: 1px solid var(--border-primary);
+    border-radius: 12px;
+    padding: 1.5rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.waveform-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent-green), transparent);
+    animation: waveformGlow 3s ease-in-out infinite;
+}
+
+@keyframes waveformGlow {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
+}
+
+.waveform-title {
+    text-align: center;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 1.5rem;
+    background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-green) 50%, var(--text-primary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Waveform Bars Animation */
+.waveform-bars {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 4px;
+    height: 120px;
+    margin: 1rem 0;
+    position: relative;
+}
+
+.waveform-bar {
+    width: 8px;
+    background: linear-gradient(to top, var(--accent-green), #40c057);
+    border-radius: 4px 4px 0 0;
+    animation: waveformPulse 2s ease-in-out infinite;
+    animation-delay: var(--delay);
+    height: var(--height);
+    min-height: 8px;
+    box-shadow: 0 0 8px rgba(81, 207, 102, 0.3);
+    transition: var(--transition-smooth);
+}
+
+.waveform-bar:hover {
+    background: linear-gradient(to top, #40c057, var(--accent-green));
+    box-shadow: 0 0 12px rgba(81, 207, 102, 0.6);
+    transform: scaleY(1.1);
+}
+
+@keyframes waveformPulse {
+    0%, 100% { 
+        height: calc(var(--height) * 0.3);
+        opacity: 0.7;
+    }
+    50% { 
+        height: var(--height);
+        opacity: 1;
+    }
+}
+
+.waveform-baseline {
+    height: 1px;
+    background: var(--border-primary);
+    margin-top: 0.5rem;
+    position: relative;
+}
+
+.waveform-baseline::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, var(--accent-green), transparent);
+    animation: baselineSweep 4s linear infinite;
+}
+
+@keyframes baselineSweep {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+/* Audio Stats Grid */
+.audio-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1rem;
+}
+
+.stat-card {
+    background: linear-gradient(135deg, var(--bg-card), var(--bg-secondary));
+    border: 1px solid var(--border-primary);
+    border-radius: 12px;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    transition: var(--transition-smooth);
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(81, 207, 102, 0.15);
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(81, 207, 102, 0.1), transparent);
+    transition: var(--transition-smooth);
+}
+
+.stat-card:hover::before {
+    left: 100%;
+}
+
+.stat-icon {
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, var(--accent-green), #40c057);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--bg-primary);
+    font-size: 0.875rem;
+}
+
+.stat-content {
+    flex: 1;
+}
+
+.stat-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-bottom: 0.25rem;
+}
+
+.stat-value {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.speaking-indicator {
+    background: linear-gradient(135deg, var(--accent-green), #40c057);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: speakingPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes speakingPulse {
+    0%, 100% { opacity: 0.7; }
+    50% { opacity: 1; }
+}
+
+/* Activity Feed */
+.activity-feed {
+    background: linear-gradient(135deg, var(--bg-secondary), var(--bg-card));
+    border: 1px solid var(--border-primary);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.activity-header {
+    background: linear-gradient(135deg, var(--bg-card), var(--bg-secondary));
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--border-primary);
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.activity-header .icon {
+    color: var(--accent-green);
+}
+
+.activity-list {
+    padding: 0.5rem 0;
+}
+
+.activity-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    transition: var(--transition-smooth);
+    position: relative;
+}
+
+.activity-item:hover {
+    background: linear-gradient(135deg, var(--bg-card), var(--bg-secondary));
+}
+
+.activity-item.active .activity-dot {
+    background: var(--accent-green);
+    box-shadow: 0 0 8px rgba(81, 207, 102, 0.6);
+    animation: activityPulse 2s ease-in-out infinite;
+}
+
+.activity-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--text-muted);
+    border-radius: 50%;
+    flex-shrink: 0;
+    transition: var(--transition-smooth);
+}
+
+@keyframes activityPulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.3); opacity: 0.7; }
+}
+
+.activity-text {
+    flex: 1;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+.activity-item.active .activity-text {
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.activity-time {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+/* Responsive Design */
+@media (max-width: 968px) {
+    .waveform-bars {
+        height: 80px;
+        gap: 3px;
+    }
+    
+    .waveform-bar {
+        width: 6px;
+    }
+    
+    .audio-stats-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .waveform-viewport {
+        padding: 1rem;
+        gap: 1rem;
+    }
+    
+    .waveform-container {
+        padding: 1rem;
+    }
+    
+    .waveform-bars {
+        height: 60px;
+        gap: 2px;
+    }
+    
+    .waveform-bar {
+        width: 4px;
+    }
+    
+    .stat-card {
+        padding: 0.75rem;
+    }
+    
+    .stat-icon {
+        width: 28px;
+        height: 28px;
+    }
+}
+
+</style>
+</head>
+
+<body>
+    <div class="main-wrapper screening-page">
+        <div class="floating-elements">
+            <div class="floating-dot"></div>
+            <div class="floating-dot"></div>
+            <div class="floating-dot"></div>
+            <div class="floating-dot"></div>
+        </div>
+        
+        <!-- STANDARDIZED NAVIGATION -->
+        <nav class="navbar">
+            <div class="navbar-container">
+                <a href="/" class="navbar-brand">
+                    <i class="fas fa-brain icon"></i> HireAI
+                </a>
+                <ul class="navbar-nav">
+                    <li><a href="/" class="nav-link" data-page="home">Home</a></li>
+                    <li><a href="/upload" class="nav-link" data-page="upload">Upload Resume</a></li>
+                    <li><a href="/candidates" class="nav-link" data-page="candidates">View Candidates</a></li>
+                    <li><a href="/search" class="nav-link" data-page="search">Search Candidates</a></li>
+                    <li><a href="/outreach" class="nav-link" data-page="outreach">Personalized Outreach</a></li>
+                    <li><a href="/analytics" class="nav-link" data-page="analytics">Analytics</a></li>
+                    <li><a href="/background_check" class="nav-link active" data-page="background_check">AI Screening</a></li>
+                </ul>
+
+                <!-- Mobile menu toggle -->
+                <button class="navbar-toggle" id="navbar-toggle" style="display: none;">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Enhanced Screening Header -->
+        <div class="screening-header">
+            <div class="main-container">
+                <div class="centered-content animate-fadeInUp">
+                    <h1 class="hero-title mb-3">
+                        <i class="fas fa-robot icon-large"></i> AI Interview & Candidate Screening
+                    </h1>
+                    <p class="hero-subtitle">
+                        Conduct AI-powered interviews and find the best candidates using natural language queries
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-container" id="mainContainer">
+            <div class="screening-layout">
+                <!-- Full-width Configuration Panel -->
+                <div class="animate-fadeInUp">
+                    <div class="screening-container">
+                        <!-- AI Interview Setup Section -->
+                        <div class="interview-section">
+                            <h4>
+                                <i class="fas fa-microphone icon"></i> AI Interview Setup
+                            </h4>
+                            
+                            <div class="interview-controls">
+                                <button id="setupInterviewBtn" class="btn btn-primary">
+                                    <i class="fas fa-cog icon"></i> Setup Interview
+                                </button>
+                                
+                                <button id="toggleWidgetBtn" class="btn btn-secondary">
+                                    <i class="fas fa-expand icon"></i> Start Interview
+                                </button>
+                            </div>
+
+                            <div class="info-box">
+                                <small class="text-muted">
+                                    <i class="fas fa-info-circle icon"></i>
+                                    Use natural language to describe your ideal candidate. The AI will analyze and match against uploaded resumes.
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Results Section -->
+                <div class="animate-fadeInUp">
+                    <!-- Loading Indicator -->
+                    <div id="loadingIndicator" class="loading-container" style="display: none;">
+                        <div class="spinner"></div>
+                        <p class="text-secondary">Searching and analyzing candidates...</p>
+                    </div>
+
+                    <!-- Results Section -->
+                    <div id="resultsSection" style="display: none;">
+                        <div class="results-header">
+                            <h3 class="mb-0">
+                                <i class="fas fa-users icon"></i> 
+                                Matching Candidates (<span id="totalFound">0</span>)
+                            </h3>
+                        </div>
+                        <ul id="candidatesList" class="results-list" style="list-style: none; padding: 0;"></ul>
+                    </div>
+
+                    <!-- No Results Message -->
+                    <div id="noResultsMessage" class="no-results-message" style="display: none;">
+                        <i class="fas fa-users-slash"></i>
+                        <h3>No Candidates Found</h3>
+                        <p>Try a different query or <a href="/upload" style="color: var(--accent-green);">upload more resumes</a>.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Full-Screen Interview Setup Modal -->
+        <div id="interviewSetupModal" class="modal">
+            <div class="modal-content">
+                <button class="modal-close-btn" id="cancelSetupBtn">
+                    <i class="fas fa-times"></i>
+                </button>
+                
+                <h3>
+                    <i class="fas fa-microphone icon"></i> Setup AI Interview
+                </h3>
+                
+                <div class="modal-form-container">
+                    <div class="form-group">
+                        <label class="form-label">Candidate Name:</label>
+                        <input type="text" id="candidateName" class="form-control"
+                            placeholder="Enter candidate name">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Job Description:</label>
+                        <textarea id="interviewJobDesc" class="form-control" rows="6"
+                            placeholder="Enter job description for tailored interview questions..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Voice Selection:</label>
+                        <select id="voiceSelect" class="form-control">
+                            <option value="21m00Tcm4TlvDq8ikWAM">Default Voice</option>
+                        </select>
+                    </div>
+                    
+                    <div class="modal-actions">
+                        <button id="createAgentBtn" class="btn btn-primary">
+                            <i class="fas fa-robot icon"></i> Create Interview Agent
+                        </button>
+                        <button class="btn btn-secondary" onclick="document.getElementById('interviewSetupModal').classList.remove('active')">
+                            <i class="fas fa-times icon"></i> Cancel
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Full-page widget container -->
+        <!-- Full-page widget container -->
+        <!-- Full-page widget container -->
+<!-- Full-page widget container -->
+<div class="widget-fullpage-container" id="widgetContainer" style="display: none;">
+    <!-- Enhanced Professional Header -->
+    <div class="interview-header-pro">
+        <div class="interview-header-content">
+            <div class="header-brand">
+                <i class="fas fa-brain icon"></i> HireAI
+            </div>
+            <div class="header-center">
+                <h2 class="interview-title-pro">
+                    <i class="fas fa-microphone icon"></i> Interview In Progress
+                </h2>
+            </div>
+            <div class="header-actions">
+                <button id="closeWidgetBtn" class="btn btn-primary close-interview-btn-pro">
+                    <i class="fas fa-times"></i> End Interview
+                </button>
+            </div>
+        </div>
+        <div class="live-progress-bar">
+            <div class="progress-pulse"></div>
+        </div>
+    </div>
+    
+    <!-- Professional Three-Panel Grid -->
+    <div class="interview-grid-pro">
+        <!-- Left: Enhanced Camera Panel -->
+        <div class="camera-panel-pro panel-entry">
+            <div class="camera-container-pro screening-container">
+                <div class="panel-header-pro">
+                    <i class="fas fa-video icon"></i> Live Camera
+                </div>
+                <div class="camera-viewport">
+                    <div class="video-frame">
+                        <video id="cameraVideo" autoplay muted playsinline></video>
+                        <div class="camera-glow-ring"></div>
+                    </div>
+                    <div class="camera-controls">
+                        <div class="camera-status-pro" id="cameraStatus">
+                            <i class="fas fa-spinner fa-spin"></i> Connecting...
+                        </div>
+                        <div class="camera-actions">
+                            <button class="control-btn" id="muteBtn" title="Mute/Unmute">
+                                <i class="fas fa-microphone"></i>
+                            </button>
+                            <button class="control-btn" id="snapshotBtn" title="Take Snapshot">
+                                <i class="fas fa-camera"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Center: Enhanced Transcript Panel -->
+        <!-- Center: Live Audio Waveform Panel -->
+<div class="transcript-panel-pro panel-entry">
+    <div class="transcript-container-pro screening-container">
+        <div class="panel-header-pro transcript-sticky">
+            <i class="fas fa-wave-square icon"></i> Audio Activity
+        </div>
+        <div class="waveform-viewport">
+            <!-- Main Waveform Display -->
+            <div class="waveform-container">
+                <div class="waveform-title">Live Audio Analysis</div>
+                <div class="waveform-bars">
+                    <!-- 20 bars, each with --delay and --height style -->
+                    <div class="waveform-bar" style="--delay: 0.1s; --height: 20%"></div>
+                    <!-- …repeat for each bar… -->
+                    <div class="waveform-bar" style="--delay: 2.0s; --height: 40%"></div>
+                </div>
+                <div class="waveform-baseline"></div>
+            </div>
+            
+            <!-- Audio Stats -->
+            <div class="audio-stats-grid">
+                <!-- Volume Level card -->
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-volume-up"></i></div>
+                    <div class="stat-content">
+                        <div class="stat-label">Volume Level</div>
+                        <div class="stat-value" id="volumeLevel">68%</div>
+                    </div>
+                </div>
+                <!-- Speaking status card -->
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-microphone"></i></div>
+                    <div class="stat-content">
+                        <div class="stat-label">Speaking</div>
+                        <div class="stat-value speaking-indicator" id="speakingStatus">Active</div>
+                    </div>
+                </div>
+                <!-- Duration card -->
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-clock"></i></div>
+                    <div class="stat-content">
+                        <div class="stat-label">Duration</div>
+                        <div class="stat-value" id="interviewDuration">05:23</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Real-time Activity Feed -->
+            <div class="activity-feed">
+                <div class="activity-header"><i class="fas fa-pulse icon"></i> Recent Activity</div>
+                <div class="activity-list">
+                    <div class="activity-item active">
+                        <div class="activity-dot"></div>
+                        <div class="activity-text">Candidate speaking...</div>
+                        <div class="activity-time">Now</div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-dot"></div>
+                        <div class="activity-text">AI asked about experience</div>
+                        <div class="activity-time">2m ago</div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-dot"></div>
+                        <div class="activity-text">Interview session started</div>
+                        <div class="activity-time">5m ago</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+        
+        <!-- Right: Enhanced Widget Panel -->
+        <div class="widget-panel-pro panel-entry">
+            <div class="widget-container-pro screening-container">
+                <div class="panel-header-pro">
+                    <i class="fas fa-robot icon"></i> AI Assistant
+                </div>
+                <div class="widget-viewport">
+                    <div class="widget-frame">
+                        <elevenlabs-convai agent-id="agent_01jy220rhcen1rbwx9h3yg1d90"></elevenlabs-convai>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+        <script src="https://unpkg.com/@elevenlabs/convai-widget-embed" async type="text/javascript"></script>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <i class="fas fa-brain icon"></i> HireAI
+                </div>
+                <p class="footer-text">
+                    Built with ❤️ by <strong>Team Seeds! 🌱</strong><br>
+                    Revolutionizing Recruitment with AI
+                </p>
+                
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // ← Paste these two functions right here, before anything else in this <script>
+
+async function initializeCamera() {
+  const video = document.getElementById('cameraVideo');
+  const cameraStatus = document.getElementById('cameraStatus');
+  
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: { width: { ideal: 640 }, height: { ideal: 480 }, facingMode: 'user' },
+      audio: false
+    });
+    video.srcObject = stream;
+    video.addEventListener('loadedmetadata', () => {
+      cameraStatus.style.display = 'none';
+    });
+    console.log('Camera initialized successfully');
+  } catch (error) {
+    console.error('Error accessing camera:', error);
+    if (error.name === 'NotAllowedError') {
+      cameraStatus.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Camera access denied';
+    } else if (error.name === 'NotFoundError') {
+      cameraStatus.innerHTML = '<i class="fas fa-video-slash"></i> No camera found';
+    } else {
+      cameraStatus.innerHTML = '<i class="fas fa-exclamation-circle"></i> Camera unavailable';
+    }
+    cameraStatus.style.color = '#ff6b6b';
+  }
+}
+
+function stopCamera() {
+  const video = document.getElementById('cameraVideo');
+  const stream = video.srcObject;
+  if (stream) {
+    stream.getTracks().forEach(track => track.stop());
+    video.srcObject = null;
+  }
+}
+// ← End of pasted helper functions
+        document.addEventListener('DOMContentLoaded', function () {
+            // DOM elements
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            const resultsSection = document.getElementById('resultsSection');
+            const totalFound = document.getElementById('totalFound');
+            const candidatesList = document.getElementById('candidatesList');
+            const noResultsMessage = document.getElementById('noResultsMessage');
+            const toggleWidgetBtn = document.getElementById('toggleWidgetBtn');
+            const closeWidgetBtn = document.getElementById('closeWidgetBtn');
+            const widgetContainer = document.getElementById('widgetContainer');
+            const mainContainer = document.getElementById('mainContainer');
+
+            // Interview elements
+            const setupInterviewBtn = document.getElementById('setupInterviewBtn');
+            const interviewSetupModal = document.getElementById('interviewSetupModal');
+            const cancelSetupBtn = document.getElementById('cancelSetupBtn');
+            const createAgentBtn = document.getElementById('createAgentBtn');
+            const candidateName = document.getElementById('candidateName');
+            const interviewJobDesc = document.getElementById('interviewJobDesc');
+            const voiceSelect = document.getElementById('voiceSelect');
+
+            // Current interview state
+            let currentAgentId = null;
+            let currentSessionId = null;
+
+            // Load available voices on page load
+            loadAvailableVoices();
+
+            async function loadAvailableVoices() {
+                try {
+                    const response = await fetch('/api/ai_interview/voices');
+                    const data = await response.json();
+
+                    if (data.success && data.voices) {
+                        voiceSelect.innerHTML = '';
+                        data.voices.forEach(voice => {
+                            const option = document.createElement('option');
+                            option.value = voice.voice_id;
+                            option.textContent = `${voice.name} (${voice.category})`;
+                            voiceSelect.appendChild(option);
+                        });
+                    }
+                } catch (error) {
+                    console.error('Error loading voices:', error);
+                }
+            }
+
+            // Interview setup modal functions
+            function showInterviewSetup() {
+                interviewSetupModal.classList.add('active');
+            }
+
+            function hideInterviewSetup() {
+                interviewSetupModal.classList.remove('active');
+            }
+
+            async function createInterviewAgent() {
+                const candidateNameValue = candidateName.value.trim();
+                const jobDesc = interviewJobDesc.value.trim();
+                const selectedVoice = voiceSelect.value;
+
+                if (!candidateNameValue) {
+                    alert('Please enter candidate name');
+                    return;
+                }
+
+                if (!jobDesc) {
+                    alert('Please enter job description');
+                    return;
+                }
+
+                try {
+                    createAgentBtn.disabled = true;
+                    createAgentBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating Agent...';
+
+                    const response = await fetch('/api/ai_interview/create_agent', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            job_description: jobDesc,
+                            agent_name: "Interview Assistant",
+                            voice_id: selectedVoice
+                        })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        currentAgentId = data.agent_id;
+                        hideInterviewSetup();
+
+                        const convaiWidget = document.querySelector('elevenlabs-convai');
+                        if (convaiWidget) {
+                            convaiWidget.setAttribute('agent-id', currentAgentId);
+                        }
+
+                        toggleWidgetBtn.innerHTML = '<i class="fas fa-microphone"></i> Start Interview';
+                        toggleWidgetBtn.disabled = false;
+
+                        alert(`Interview agent created successfully! Ready to start interview with ${candidateNameValue}.`);
+                    } else {
+                        alert(`Error creating agent: ${data.error}`);
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Failed to create interview agent. Please try again.');
+                } finally {
+                    createAgentBtn.disabled = false;
+                    createAgentBtn.innerHTML = '<i class="fas fa-robot icon"></i> Create Interview Agent';
+                }
+            }
+
+            // Widget toggle functionality
+            function openFullscreenWidget() {
+    if (!currentAgentId) {
+        alert('Please setup an interview agent first!');
+        return;
+    }
+    // 1) Show the full-screen widget
+    widgetContainer.style.display = 'block';
+    mainContainer.style.display = 'none';
+    document.body.style.overflow = 'hidden';
+
+    // 2) Kick off the camera
+    initializeCamera();
+
+    // 3) Then start the AI interview
+    startInterviewSession();
+    startWaveformUpdates();    
+
+}
+
+            function closeFullscreenWidget() {
+    // 1) Hide the full-screen widget
+    widgetContainer.style.display = 'none';
+    mainContainer.style.display = 'block';
+    document.body.style.overflow = 'auto';
+
+    // 2) Tear down the camera feed
+    stopCamera();
+
+    // 3) Then end the AI interview session
+    if (currentSessionId) {
+        endInterviewSession();
+    }
+}
+            async function startInterviewSession() {
+                if (!currentAgentId) return;
+
+                try {
+                    const response = await fetch('/api/ai_interview/start_session', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            agent_id: currentAgentId,
+                            candidate_name: candidateName.value.trim() || 'Anonymous'
+                        })
+                    });
+
+                    const data = await response.json();
+                    if (data.success) {
+                        currentSessionId = data.session_info.session_id;
+                        console.log('Interview session started:', currentSessionId);
+                    }
+                } catch (error) {
+                    console.error('Error starting session:', error);
+                }
+            }
+
+            async function endInterviewSession() {
+                if (!currentSessionId) return;
+
+                try {
+                    const response = await fetch('/api/ai_interview/end_session', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            session_id: currentSessionId
+                        })
+                    });
+
+                    const data = await response.json();
+                    if (data.success) {
+                        console.log('Interview session ended:', data.session_summary);
+                        currentSessionId = null;
+                    }
+                } catch (error) {
+                    console.error('Error ending session:', error);
+                }
+            }
+
+            // Event listeners for interview setup
+            if (setupInterviewBtn) {
+                setupInterviewBtn.addEventListener('click', showInterviewSetup);
+            }
+
+            if (cancelSetupBtn) {
+                cancelSetupBtn.addEventListener('click', hideInterviewSetup);
+            }
+
+            if (createAgentBtn) {
+                createAgentBtn.addEventListener('click', createInterviewAgent);
+            }
+
+            // Close modal when clicking outside or ESC key
+            interviewSetupModal.addEventListener('click', function (event) {
+                if (event.target === interviewSetupModal) {
+                    hideInterviewSetup();
+                }
+            });
+
+            document.addEventListener('keydown', function (event) {
+                if (event.key === 'Escape') {
+                    if (interviewSetupModal.classList.contains('active')) {
+                        hideInterviewSetup();
+                    } else if (widgetContainer.style.display === 'block') {
+                        closeFullscreenWidget();
+                    }
+                }
+            });
+
+            // Event listeners for widget toggle
+            if (toggleWidgetBtn) {
+                toggleWidgetBtn.addEventListener('click', openFullscreenWidget);
+            }
+
+            if (closeWidgetBtn) {
+                closeWidgetBtn.addEventListener('click', closeFullscreenWidget);
+            }
+
+            // Function to display matched candidates
+            function displayMatchedCandidates(candidates) {
+                candidatesList.innerHTML = '';
+                if (candidates && candidates.length > 0) {
+                    candidates.forEach((candidate, index) => {
+                        const listItem = document.createElement('li');
+                        listItem.className = 'candidate-match-item animate-fadeInUp';
+                        listItem.innerHTML = `
+                            <h4>${candidate.name || 'N/A'}</h4>
+                            <p><i class="fas fa-envelope icon"></i> ${candidate.email || 'N/A'} | <i class="fas fa-map-marker-alt icon"></i> ${candidate.location || 'N/A'} | <i class="fas fa-calendar icon"></i> ${candidate.experience_years || 0} Years Experience</p>
+                            <p>Match Score: <span class="match-score">${candidate.match_score || 0}%</span></p>
+                            <div class="match-reasons">
+                                <h5><i class="fas fa-check-circle icon"></i> Match Reasons:</h5>
+                                <ul>
+                                    ${candidate.match_reasons && Array.isArray(candidate.match_reasons) ? candidate.match_reasons.map(reason => `<li>${reason}</li>`).join('') : '<li>No specific reasons provided.</li>'}
+                                </ul>
+                            </div>
+                            <div style="margin-top: 1.5rem; display: flex; gap: 0.75rem; flex-wrap: wrap;">
+                                <button class="btn btn-primary btn-sm interview-candidate-btn" data-candidate="${encodeURIComponent(JSON.stringify(candidate))}">
+                                    <i class="fas fa-microphone"></i> Interview Candidate
+                                </button>
+                                <button class="btn btn-secondary btn-sm" onclick="window.open('/candidate_detail?name=${encodeURIComponent(candidate.name)}', '_blank')">
+                                    <i class="fas fa-eye"></i> View Details
+                                </button>
+                            </div>
+                        `;
+                        candidatesList.appendChild(listItem);
+                    });
+
+                    // Add event listeners to interview buttons
+                    document.querySelectorAll('.interview-candidate-btn').forEach(btn => {
+                        btn.addEventListener('click', function () {
+                            const candidateData = JSON.parse(decodeURIComponent(this.dataset.candidate));
+                            setupInterviewForCandidate(candidateData);
+                        });
+                    });
+
+                    resultsSection.style.display = 'block';
+                    noResultsMessage.style.display = 'none';
+                    totalFound.textContent = candidates.length;
+                } else {
+                    resultsSection.style.display = 'none';
+                    noResultsMessage.style.display = 'block';
+                    totalFound.textContent = '0';
+                }
+            }
+
+            // Function to setup interview for a specific candidate
+            function setupInterviewForCandidate(candidate) {
+                candidateName.value = candidate.name || 'Anonymous';
+                showInterviewSetup();
+            }
+
+            // STANDARDIZED NAVBAR ACTIVE STATE MANAGEMENT
+            const currentPath = window.location.pathname;
+            const navLinks = document.querySelectorAll('.nav-link');
+
+            navLinks.forEach(link => link.classList.remove('active'));
+
+            let activeSet = false;
+            navLinks.forEach(link => {
+                const href = link.getAttribute('href');
+                const page = link.getAttribute('data-page');
+
+                if (href === currentPath ||
+                    (currentPath === '/' && page === 'home') ||
+                    (currentPath.includes('/upload') && page === 'upload') ||
+                    (currentPath.includes('/candidates') && page === 'candidates') ||
+                    (currentPath.includes('/search') && page === 'search') ||
+                    (currentPath.includes('/outreach') && page === 'outreach') ||
+                    (currentPath.includes('/background_check') && page === 'background_check') ||
+                    (currentPath.includes('/analytics') && page === 'analytics')) {
+                    link.classList.add('active');
+                    activeSet = true;
+                }
+            });
+
+            if (!activeSet) {
+                const homeLink = document.querySelector('[data-page="home"]');
+                if (homeLink) homeLink.classList.add('active');
+            }
+
+            // Mobile menu toggle functionality
+            const navbarToggle = document.getElementById('navbar-toggle');
+            const navbarNav = document.querySelector('.navbar-nav');
+            
+            if (navbarToggle && navbarNav) {
+                navbarToggle.addEventListener('click', function() {
+                    navbarNav.classList.toggle('active');
+                });
+                
+                navLinks.forEach(link => {
+                    link.addEventListener('click', function() {
+                        navbarNav.classList.remove('active');
+                    });
+                });
+                
+                document.addEventListener('click', function(e) {
+                    if (!navbarToggle.contains(e.target) && !navbarNav.contains(e.target)) {
+                        navbarNav.classList.remove('active');
+                    }
+                });
+            }
+
+            // Update live datetime
+            function updateDateTime() {
+                const now = new Date();
+                const utcString = now.toISOString().slice(0, 19).replace('T', ' ');
+                const currentElement = document.getElementById('currentDateTime');
+                if (currentElement) currentElement.textContent = utcString;
+            }
+
+            updateDateTime();
+            setInterval(updateDateTime, 1000);
+
+            // Scroll animations
+            function addScrollAnimations() {
+                const animateElements = document.querySelectorAll('.animate-fadeInUp, .animate-fadeInLeft');
+                
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.style.opacity = '1';
+                            entry.target.style.transform = 'translateY(0) translateX(0)';
+                        }
+                    });
+                }, { threshold: 0.1 });
+                
+                animateElements.forEach(el => {
+                    el.style.opacity = '0';
+                    el.style.transition = 'all 0.6s ease-out';
+                    if (el.classList.contains('animate-fadeInUp')) {
+                        el.style.transform = 'translateY(30px)';
+                    } else if (el.classList.contains('animate-fadeInLeft')) {
+                        el.style.transform = 'translateX(-30px)';
+                    }
+                    observer.observe(el);
+                });
+            }
+
+            addScrollAnimations();
+            console.log('HireAI Screening Page initialized');
+        });
+
+        // — Waveform & Stats Update Helpers —
+function updateWaveformData() {
+  const volumeLevel = document.getElementById('volumeLevel');
+  if (volumeLevel) {
+    const randomVolume = Math.floor(Math.random() * 40) + 40; // 40–80%
+    volumeLevel.textContent = randomVolume + '%';
+  }
+  const durationEl = document.getElementById('interviewDuration');
+  if (durationEl) {
+    const startTime = sessionStorage.getItem('interviewStartTime') || Date.now();
+    const elapsed = Math.floor((Date.now() - startTime) / 1000);
+    const minutes = Math.floor(elapsed / 60);
+    const seconds = elapsed % 60;
+    durationEl.textContent = `${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
+  }
+}
+
+function startWaveformUpdates() {
+  sessionStorage.setItem('interviewStartTime', Date.now());
+  setInterval(updateWaveformData, 1000);
+}
+    </script>
+</body>
+</html>
