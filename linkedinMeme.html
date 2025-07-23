@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LinkedIn Comedy-Finance Optimizer</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <style>
+        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .card-hover { transition: all 0.3s ease; }
+        .card-hover:hover { transform: translateY(-5px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); }
+        .emoji-large { font-size: 2rem; }
+        .comedy-box { border: 3px dashed #f59e0b; background: linear-gradient(45deg, #fef3c7, #fde68a); }
+        .meme-template { border: 2px solid #10b981; background: linear-gradient(135deg, #d1fae5, #a7f3d0); }
+        .viral-badge { background: linear-gradient(45deg, #ef4444, #f97316); }
+        .fun-shadow { box-shadow: 0 0 20px rgba(249, 115, 22, 0.3); }
+        @media print { body { margin: 0; padding: 20px; } }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="max-w-7xl mx-auto p-6">
+        <!-- Header -->
+        <div class="text-center mb-12 gradient-bg rounded-2xl p-8 text-white">
+            <h1 class="text-5xl font-bold mb-4">
+                <i class="fas fa-laugh-beam mr-3"></i>
+                LinkedIn Comedy-Finance Optimizer
+            </h1>
+            <p class="text-xl mb-4">🎭 Making Financial Advisory Fun & Viral!</p>
+            <div class="bg-white bg-opacity-20 rounded-xl p-4 max-w-4xl mx-auto">
+                <p class="text-lg">
+                    <strong>For:</strong> AMFI-Certified Mutual Fund & PMS Advisor | IRDA-Licensed Insurance Planner<br>
+                    <strong>Mission:</strong> Transform boring finance posts into entertaining, educational content that actually gets engagement!
+                </p>
+            </div>
+        </div>
+
+        <!-- Main Content Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            
+            <!-- Comedy Post Generator -->
+            <div class="bg-white rounded-2xl shadow-lg p-6 card-hover">
+                <div class="flex items-center mb-6">
+                    <div class="bg-yellow-500 rounded-full p-3 mr-4">
+                        <i class="fas fa-comedy-masks text-white text-2xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-gray-800">Comedy Post Generator</h2>
+                </div>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Select Comedy Style:</label>
+                        <select id="comedyStyle" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            <option value="meme">Meme Format 😂</option>
+                            <option value="story">Funny Story/Analogy 📖</option>
+                            <option value="roast">Gentle Roast (Market Myths) 🔥</option>
+                            <option value="relatable">Super Relatable Situation 🎯</option>
+                            <option value="trending">Trending Format Adaptation 📈</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Financial Topic:</label>
+                        <select id="financeTopic" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            <option value="mutual-funds">Mutual Funds 💰</option>
+                            <option value="insurance">Insurance Planning 🛡️</option>
+                            <option value="tax-saving">Tax Saving Strategies 💸</option>
+                            <option value="sip">SIP Investments 📊</option>
+                            <option value="market-volatility">Market Volatility 🎢</option>
+                            <option value="financial-planning">Financial Planning 🎯</option>
+                            <option value="retirement">Retirement Planning 🏖️</option>
+                        </select>
+                    </div>
+                    
+                    <button onclick="generateComedyPost()" class="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 px-6 rounded-lg font-semibold hover:from-purple-600 hover:to-pink-600 transition duration-300">
+                        <i class="fas fa-magic mr-2"></i>Generate Hilarious Post!
+                    </button>
+                </div>
+                
+                <div id="comedyOutput" class="mt-6 p-4 bg-gray-50 rounded-lg min-h-32 hidden">
+                    <div class="flex items-center mb-2">
+                        <i class="fas fa-sparkles text-yellow-500 mr-2"></i>
+                        <span class="font-semibold">Your Comedy Gold:</span>
+                    </div>
+                    <div id="comedyText" class="text-gray-700 whitespace-pre-wrap"></div>
+                    <button onclick="copyToClipboard('comedyText')" class="mt-3 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition">
+                        <i class="fas fa-copy mr-1"></i>Copy Post
+                    </button>
+                </div>
+            </div>
+
+            <!-- Meme Education Templates -->
+            <div class="bg-white rounded-2xl shadow-lg p-6 card-hover">
+                <div class="flex items-center mb-6">
+                    <div class="bg-green-500 rounded-full p-3 mr-4">
+                        <i class="fas fa-image text-white text-2xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-gray-800">Meme Education Builder</h2>
+                </div>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Meme Template:</label>
+                        <select id="memeTemplate" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
+                            <option value="drake">Drake Pointing (This vs That) 👆</option>
+                            <option value="brain">Expanding Brain (Levels of Smart) 🧠</option>
+                            <option value="distracted">Distracted Boyfriend (Temptations) 👀</option>
+                            <option value="woman-cat">Woman Yelling at Cat (Reactions) 😾</option>
+                            <option value="success-kid">Success Kid (Achievements) 👶</option>
+                            <option value="change-my-mind">Change My Mind (Bold Statements) 💺</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Educational Concept:</label>
+                        <input type="text" id="memeEducationTopic" placeholder="e.g., SIP vs Lump Sum Investment" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
+                    </div>
+                    
+                    <button onclick="generateMemeEducation()" class="w-full bg-gradient-to-r from-green-500 to-blue-500 text-white py-3 px-6 rounded-lg font-semibold hover:from-green-600 hover:to-blue-600 transition duration-300">
+                        <i class="fas fa-image mr-2"></i>Create Meme Learning!
+                    </button>
+                </div>
+                
+                <div id="memeOutput" class="mt-6 hidden">
+                    <div class="meme-template p-4 rounded-lg">
+                        <div class="flex items-center mb-2">
+                            <i class="fas fa-graduation-cap text-green-600 mr-2"></i>
+                            <span class="font-semibold">Educational Meme Content:</span>
+                        </div>
+                        <div id="memeText" class="text-gray-700 whitespace-pre-wrap"></div>
+                        <button onclick="copyToClipboard('memeText')" class="mt-3 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition">
+                            <i class="fas fa-copy mr-1"></i>Copy Meme Text
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Viral Story Generator -->
+            <div class="bg-white rounded-2xl shadow-lg p-6 card-hover">
+                <div class="flex items-center mb-6">
+                    <div class="bg-red-500 rounded-full p-3 mr-4">
+                        <i class="fas fa-fire text-white text-2xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-gray-800">Viral Story Spinner</h2>
+                </div>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Story Theme:</label>
+                        <select id="storyTheme" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500">
+                            <option value="client-funny">Funny Client Interaction 😄</option>
+                            <option value="personal-mistake">My Hilarious Money Mistake 🤦</option>
+                            <option value="family-finance">Family Financial Drama 👨‍👩‍👧‍👦</option>
+                            <option value="market-reaction">Dramatic Market Reactions 📈📉</option>
+                            <option value="advisor-life">Life of a Financial Advisor 💼</option>
+                            <option value="investment-journey">Investment Journey Chronicles 🚀</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Key Learning Point:</label>
+                        <input type="text" id="storyLearning" placeholder="e.g., Why diversification matters" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500">
+                    </div>
+                    
+                    <button onclick="generateViralStory()" class="w-full viral-badge text-white py-3 px-6 rounded-lg font-semibold hover:shadow-lg transition duration-300">
+                        <i class="fas fa-rocket mr-2"></i>Spin Viral Story!
+                    </button>
+                </div>
+                
+                <div id="storyOutput" class="mt-6 p-4 bg-gradient-to-r from-red-50 to-orange-50 rounded-lg min-h-32 hidden">
+                    <div class="flex items-center mb-2">
+                        <i class="fas fa-fire text-red-500 mr-2"></i>
+                        <span class="font-semibold">Viral Story Ready:</span>
+                    </div>
+                    <div id="storyText" class="text-gray-700 whitespace-pre-wrap"></div>
+                    <button onclick="copyToClipboard('storyText')" class="mt-3 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition">
+                        <i class="fas fa-copy mr-1"></i>Copy Story
+                    </button>
+                </div>
+            </div>
+
+            <!-- Trending Format Adapter -->
+            <div class="bg-white rounded-2xl shadow-lg p-6 card-hover">
+                <div class="flex items-center mb-6">
+                    <div class="bg-purple-500 rounded-full p-3 mr-4">
+                        <i class="fas fa-trending-up text-white text-2xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-gray-800">Trending Format Hub</h2>
+                </div>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Current Trend:</label>
+                        <select id="trendingFormat" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                            <option value="pov">POV: You're... (Point of View) 👁️</option>
+                            <option value="nobody">Nobody: ... Me: (Reaction Format) 💭</option>
+                            <option value="explain-like">Explain Like I'm 5 (ELI5) 👶</option>
+                            <option value="this-you">Is This You? (Relatable Callout) 🫵</option>
+                            <option value="red-flags">Red Flags in... 🚩</option>
+                            <option value="unpopular-opinion">Unpopular Opinion: 🔥</option>
+                            <option value="plot-twist">Plot Twist: (Surprise Endings) 🌪️</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Financial Angle:</label>
+                        <input type="text" id="trendingTopic" placeholder="e.g., investment behavior, market myths" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                    </div>
+                    
+                    <button onclick="generateTrendingPost()" class="w-full bg-gradient-to-r from-purple-500 to-indigo-500 text-white py-3 px-6 rounded-lg font-semibold hover:from-purple-600 hover:to-indigo-600 transition duration-300">
+                        <i class="fas fa-chart-line mr-2"></i>Ride The Trend!
+                    </button>
+                </div>
+                
+                <div id="trendingOutput" class="mt-6 p-4 bg-purple-50 rounded-lg min-h-32 hidden">
+                    <div class="flex items-center mb-2">
+                        <i class="fas fa-star text-purple-500 mr-2"></i>
+                        <span class="font-semibold">Trending Content:</span>
+                    </div>
+                    <div id="trendingText" class="text-gray-700 whitespace-pre-wrap"></div>
+                    <button onclick="copyToClipboard('trendingText')" class="mt-3 bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600 transition">
+                        <i class="fas fa-copy mr-1"></i>Copy Trending Post
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Comedy Templates Library -->
+        <div class="mt-12 bg-white rounded-2xl shadow-lg p-8">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">
+                    <i class="fas fa-theater-masks mr-3 text-yellow-500"></i>
+                    Comedy Templates Library
+                </h2>
+                <p class="text-gray-600">Ready-to-use formats that make finance fun!</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="comedy-box p-6 rounded-lg">
+                    <h3 class="font-bold text-lg mb-3">🎭 The "Finance vs Reality" Format</h3>
+                    <p class="text-sm text-gray-700 mb-3">Perfect for highlighting the gap between theory and practice</p>
+                    <div class="bg-white p-3 rounded text-xs">
+                        <strong>Template:</strong><br>
+                        "Financial textbooks: [Serious advice]<br>
+                        Real life: [Funny reality]<br><br>
+                        But here's the thing... [Your wisdom]"
+                    </div>
+                </div>
+                
+                <div class="comedy-box p-6 rounded-lg">
+                    <h3 class="font-bold text-lg mb-3">😂 The "Client Conversations" Series</h3>
+                    <p class="text-sm text-gray-700 mb-3">Turn common client questions into comedy gold</p>
+                    <div class="bg-white p-3 rounded text-xs">
+                        <strong>Template:</strong><br>
+                        "Client: [Funny/naive question]<br>
+                        Me internally: [Humorous reaction]<br>
+                        Me externally: [Professional response]<br><br>
+                        Why this matters: [Educational insight]"
+                    </div>
+                </div>
+                
+                <div class="comedy-box p-6 rounded-lg">
+                    <h3 class="font-bold text-lg mb-3">🎢 The "Investment Emotions" Roller Coaster</h3>
+                    <p class="text-sm text-gray-700 mb-3">Make market volatility relatable and funny</p>
+                    <div class="bg-white p-3 rounded text-xs">
+                        <strong>Template:</strong><br>
+                        "Portfolio up 2%: 🚀 'I'm a genius!'<br>
+                        Portfolio down 1%: 😱 'End of the world!'<br><br>
+                        Sound familiar? Here's why... [Your advice]"
+                    </div>
+                </div>
+                
+                <div class="comedy-box p-6 rounded-lg">
+                    <h3 class="font-bold text-lg mb-3">🔍 The "Financial Myth Buster"</h3>
+                    <p class="text-sm text-gray-700 mb-3">Humorously debunk common financial myths</p>
+                    <div class="bg-white p-3 rounded text-xs">
+                        <strong>Template:</strong><br>
+                        "Myth: [Common false belief]<br>
+                        My reaction: [Funny GIF reference]<br>
+                        Reality: [Educational truth]<br><br>
+                        Don't fall for this trap!"
+                    </div>
+                </div>
+                
+                <div class="comedy-box p-6 rounded-lg">
+                    <h3 class="font-bold text-lg mb-3">📱 The "Finance in Daily Life"</h3>
+                    <p class="text-sm text-gray-700 mb-3">Connect finance to everyday situations</p>
+                    <div class="bg-white p-3 rounded text-xs">
+                        <strong>Template:</strong><br>
+                        "Choosing investments is like [relatable activity]<br>
+                        You wouldn't [silly behavior],<br>
+                        So why do people [financial mistake]?<br><br>
+                        Pro tip: [Your advice]"
+                    </div>
+                </div>
+                
+                <div class="comedy-box p-6 rounded-lg">
+                    <h3 class="font-bold text-lg mb-3">🎯 The "Types of Investors"</h3>
+                    <p class="text-sm text-gray-700 mb-3">Categorize investor personalities humorously</p>
+                    <div class="bg-white p-3 rounded text-xs">
+                        <strong>Template:</strong><br>
+                        "Types of investors I meet:<br>
+                        📊 The Spreadsheet Warrior<br>
+                        😰 The Panic Seller<br>
+                        🚀 The YOLO Trader<br><br>
+                        Which one are you? 😄"
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Engagement Boosters -->
+        <div class="mt-12 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-8">
+            <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">
+                <i class="fas fa-rocket mr-3 text-blue-500"></i>
+                Engagement Boosters
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-white rounded-xl p-6 fun-shadow">
+                    <h3 class="text-xl font-bold mb-4 text-blue-600">
+                        <i class="fas fa-hashtag mr-2"></i>
+                        Comedy Hashtag Generator
+                    </h3>
+                    <button onclick="generateComedyHashtags()" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition mb-4">
+                        Generate Fun Tags
+                    </button>
+                    <div id="hashtagOutput" class="text-sm text-gray-700"></div>
+                </div>
+                
+                <div class="bg-white rounded-xl p-6 fun-shadow">
+                    <h3 class="text-xl font-bold mb-4 text-green-600">
+                        <i class="fas fa-comments mr-2"></i>
+                        Engagement Questions
+                    </h3>
+                    <button onclick="generateEngagementQuestion()" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition mb-4">
+                        Get Question Ideas
+                    </button>
+                    <div id="questionOutput" class="text-sm text-gray-700"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Professional Brand Balance -->
+        <div class="mt-12 bg-yellow-50 border-l-4 border-yellow-400 p-8 rounded-r-2xl">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">
+                <i class="fas fa-balance-scale mr-3 text-yellow-600"></i>
+                Maintaining Professional Balance
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white p-4 rounded-lg shadow">
+                    <h3 class="font-bold text-green-600 mb-2">✅ Do's</h3>
+                    <ul class="text-sm space-y-1">
+                        <li>• Use self-deprecating humor</li>
+                        <li>• Make fun of situations, not people</li>
+                        <li>• Always include educational value</li>
+                        <li>• Keep it clean and professional</li>
+                        <li>• Use relatable analogies</li>
+                    </ul>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow">
+                    <h3 class="font-bold text-red-600 mb-2">❌ Don'ts</h3>
+                    <ul class="text-sm space-y-1">
+                        <li>• Mock client situations</li>
+                        <li>• Use controversial humor</li>
+                        <li>• Compromise compliance</li>
+                        <li>• Over-share personal details</li>
+                        <li>• Forget your professional image</li>
+                    </ul>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow">
+                    <h3 class="font-bold text-blue-600 mb-2">💡 Pro Tips</h3>
+                    <ul class="text-sm space-y-1">
+                        <li>• Test humor on colleagues first</li>
+                        <li>• Mix comedy with serious posts</li>
+                        <li>• Monitor engagement patterns</li>
+                        <li>• Stay updated with trends</li>
+                        <li>• Build your unique voice</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="mt-12 text-center p-6 bg-gray-800 text-white rounded-2xl">
+            <h3 class="text-xl font-bold mb-2">Ready to Revolutionize Your LinkedIn Presence? 🚀</h3>
+            <p class="text-gray-300">Make finance fun, memorable, and engaging while building your expert authority!</p>
+            <div class="mt-4 space-x-4">
+                <span class="bg-yellow-500 px-3 py-1 rounded-full text-sm font-semibold">Comedy + Education = Viral Gold</span>
+                <span class="bg-green-500 px-3 py-1 rounded-full text-sm font-semibold">Professional + Fun = Memorable Brand</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const comedyTemplates = {
+            meme: {
+                'mutual-funds': [
+                    "When someone asks if they should invest in mutual funds:\n\n*Drake pointing away*: Keeping money in savings account earning 3%\n\n*Drake pointing and smiling*: SIP in equity mutual funds for long-term wealth\n\n🎯 But seriously, time in the market > timing the market!\n\nWhat's your take? #MutualFunds #SIP #WealthBuilding",
+                    
+                    "Me: *Explains the power of compounding in SIPs*\n\nClient: 'But I'll start when market goes down'\n\n*Insert surprised Pikachu face* 😮\n\nFriends, the market doesn't send you WhatsApp notifications about the 'perfect time'! 📱\n\nSIP works because it buys more units when market is down, fewer when up. It's automatic rupee cost averaging! 🎯\n\n#SIPKiPower #MutualFundsSahiHai"
+                ],
+                'insurance': [
+                    "*Health insurance agent explaining coverage*\n\nWhat I say: 'Comprehensive health coverage'\n\nWhat client hears: 'Expensive monthly bill'\n\nWhat it actually means: 'Sleep peacefully knowing one medical emergency won't drain your savings' 🛡️\n\nTrust me, insurance is the only product you hope to never use but are grateful to have! 💪\n\n#HealthInsurance #FinancialSecurity",
+                    
+                    "POV: Someone says 'I'm young and healthy, don't need insurance'\n\n*Shows image of person confidently walking*\n*Next image: Same person with surprised face*\n\nLife: 'Hold my medical bills' 💸\n\nYour 25-year-old healthy self gets the best premiums. Your 40-year-old self will thank you! 🙏\n\n#InsurancePlanning #YouthBenefit"
+                ],
+                'tax-saving': [
+                    "January: 'I'll plan my taxes properly this year'\n\nFebruary-November: *Chilling* 😎\n\nDecember: *Panic buying ELSS funds* 🏃‍♂️💨\n\nMarch: 'Next year I'll start early'\n\n*Cycle repeats* 🔄\n\nSound familiar? Let's break this pattern! Plan your 80C investments monthly, not yearly! 📅\n\n#TaxPlanning #ELSS #80C"
+                ]
+            },
+            story: {
+                'mutual-funds': [
+                    "Yesterday, my client asked: 'Should I withdraw my SIP because market is down?'\n\nI said: 'Do you stop buying groceries when vegetables are cheap?'\n\nHim: 'No, I buy more!'\n\nMe: 'Exactly! Your SIP is buying more mutual fund units at lower prices' 🛒\n\n*Light bulb moment* 💡\n\nSometimes the best financial advice comes wrapped in grocery shopping logic! 😄\n\nWhat everyday analogies help you understand investing? 👇\n\n#SIP #MarketVolatility #InvestmentLogic"
+                ],
+                'insurance': [
+                    "Client called at 11 PM: 'My friend got hospitalized, I need insurance RIGHT NOW!'\n\nMe: 'Insurance is like an umbrella...'\n\nHim: 'Not another analogy please!' 😅\n\nMe: 'You buy it when the sun is shining, not when it's already raining' ☔\n\nWe applied the next morning. Now he's our biggest insurance advocate! 🛡️\n\nMoral: Don't wait for the storm to buy the umbrella! \n\n#InsurancePlanning #RealStories #FinancialWisdom"
+                ]
+            },
+            roast: {
+                'mutual-funds': [
+                    "Finance influencer: 'I made 500% returns in crypto!'\n\nMe: *Checks their track record*\n\nAlso them: Started with ₹1000, now has ₹5000 🤡\n\nMeanwhile, boring SIP in large cap funds: \n✅ Consistent 12-15% CAGR over 5 years\n✅ No sleepless nights\n✅ No constant chart watching\n\nSlow and steady wins the wealth race! 🐢\n\n#SIP #RealityCheck #LongTermWealth"
+                ],
+                'market-volatility': [
+                    "Market goes up 50 points: 'I'm a stock market genius!' 🧠\n\nMarket goes down 20 points: 'The system is rigged!' 😤\n\nMe watching from SIP corner: *Sips coffee* ☕\n\n'Volatility is the price you pay for long-term returns' 📈\n\nStop checking your portfolio every 5 minutes. Your investments need time to grow, not constant supervision! ⏰\n\n#MarketVolatility #InvestmentPsychology #SIPLife"
+                ]
+            }
+        };
+
+        const memeTemplates = {
+            drake: (concept) => `*Drake pointing away*: [Bad financial habit]\n\n*Drake pointing and smiling*: [Smart financial choice related to ${concept}]\n\n🎯 The difference is in the long-term impact!\n\nWhich one describes you? 👇`,
+            
+            brain: (concept) => `🧠 Brain Level 1: [Basic approach to ${concept}]\n\n🧠🧠 Brain Level 2: [Better approach]\n\n🧠🧠🧠 Brain Level 3: [Advanced strategy]\n\n🧠🧠🧠🧠 Galaxy Brain: [Expert level wisdom about ${concept}]\n\nWhere are you on this journey? 🚀`,
+            
+            'change-my-mind': (concept) => `"${concept} is actually simple once you understand the basics"\n\n*Sits at Change My Mind table* 💺\n\nSeriously though, most people overcomplicate it. Here's the simple truth... 👇\n\n[Your educational insight]\n\nAm I wrong? Debate in comments! 💭`
+        };
+
+        const viralStoryTemplates = {
+            'client-funny': [
+                "Client called me yesterday:\n\n'I want to invest ₹50,000'\n\nMe: 'Great! What's your goal?'\n\nClient: 'I want to buy a car next month'\n\nMe: '...with ₹50,000?'\n\nClient: 'No, I want the ₹50,000 to become ₹15 lakhs by next month'\n\n*Awkward silence* 😶\n\nI gently explained the magic of compounding takes TIME, not magic! ⏰\n\nHe's now happily doing SIP for his car fund over 3 years! 🚗\n\nPatience + Planning = Success! 🎯"
+            ],
+            'personal-mistake': [
+                "Confession time: I once panicked and stopped my SIP during 2020 market crash 📉\n\nMy brain: 'Save the remaining money!'\n\nMarket next 6 months: *Recovers spectacularly* 📈\n\nMe: *Facepalm* 🤦‍♂️\n\nI restarted immediately and learned the hardest lesson:\n\nEven financial advisors are human and make emotional decisions!\n\nNow I tell all my clients: 'Do as I say AND as I (should have) done!' 😅\n\nMistakes make the best teachers! 📚"
+            ]
+        };
+
+        const trendingTemplates = {
+            pov: (topic) => `POV: You're trying to explain ${topic} to someone who thinks investing is gambling 🎰\n\nThem: 'It's all luck!'\n\nYou: *Shows 20 years of SIP data* 📊\n\nThem: 'But what if market crashes?'\n\nYou: *Explains rupee cost averaging* 📈\n\nThem: 'Still sounds risky...'\n\nYou: *Shows inflation eating savings* 📉\n\nThem: '...okay, maybe I should start SIP' ✅\n\nVictory! One more person saved from inflation monster! 🏆`,
+            
+            nobody: (topic) => `Nobody:\n\nAbsolutely nobody:\n\nPerson who just learned about ${topic}: 'Why didn't anyone tell me this before?!' 😱\n\nMe: *Been posting about it for 3 years* 📝\n\nAlso me: Better late than never! Welcome to the smart money club! 🎉\n\nFinancial education: Always there, waiting for you to discover it! 💡`,
+            
+            'red-flags': (topic) => `🚩 Red flags in ${topic}:\n\n🚩 Promises of guaranteed high returns\n🚩 'Limited time offer' pressure\n🚩 Complex products you don't understand\n🚩 No mention of risks\n🚩 Pressure to invest entire savings\n\nIf you see these, RUN! 🏃‍♂️\n\nRemember: If it sounds too good to be true, it probably is! 🎯`
+        };
+
+        function generateComedyPost() {
+            const style = document.getElementById('comedyStyle').value;
+            const topic = document.getElementById('financeTopic').value;
+            
+            let post = '';
+            
+            if (comedyTemplates[style] && comedyTemplates[style][topic]) {
+                const templates = comedyTemplates[style][topic];
+                post = templates[Math.floor(Math.random() * templates.length)];
+            } else {
+                // Fallback generation
+                post = generateFallbackPost(style, topic);
+            }
+            
+            document.getElementById('comedyText').textContent = post;
+            document.getElementById('comedyOutput').classList.remove('hidden');
+        }
+
+        function generateMemeEducation() {
+            const template = document.getElementById('memeTemplate').value;
+            const topic = document.getElementById('memeEducationTopic').value || 'financial planning';
+            
+            let memeText = '';
+            
+            if (memeTemplates[template]) {
+                memeText = memeTemplates[template](topic);
+            } else {
+                memeText = `📱 Meme Format: ${template}\n\n💡 Educational Topic: ${topic}\n\n🎯 Create visual content that makes this concept memorable and shareable!\n\nRemember: The best financial education sticks when it's fun! 😄`;
+            }
+            
+            document.getElementById('memeText').textContent = memeText;
+            document.getElementById('memeOutput').classList.remove('hidden');
+        }
+
+        function generateViralStory() {
+            const theme = document.getElementById('storyTheme').value;
+            const learning = document.getElementById('storyLearning').value || 'financial wisdom';
+            
+            let story = '';
+            
+            if (viralStoryTemplates[theme]) {
+                const stories = viralStoryTemplates[theme];
+                story = stories[Math.floor(Math.random() * stories.length)];
+            } else {
+                story = generateFallbackStory(theme, learning);
+            }
+            
+            document.getElementById('storyText').textContent = story;
+            document.getElementById('storyOutput').classList.remove('hidden');
+        }
+
+        function generateTrendingPost() {
+            const format = document.getElementById('trendingFormat').value;
+            const topic = document.getElementById('trendingTopic').value || 'financial planning';
+            
+            let trendingPost = '';
+            
+            if (trendingTemplates[format]) {
+                trendingPost = trendingTemplates[format](topic);
+            } else {
+                trendingPost = generateFallbackTrending(format, topic);
+            }
+            
+            document.getElementById('trendingText').textContent = trendingPost;
+            document.getElementById('trendingOutput').classList.remove('hidden');
+        }
+
+        function generateComedyHashtags() {
+            const hashtags = [
+                "#FinanceWithFun #MoneyMatters #InvestmentHumor #FinancialLiteracy",
+                "#SIPKiPower #MutualFundsSahiHai #WealthBuilding #MoneyMemes",
+                "#FinancialAdvisorLife #InvestmentJourney #SmartMoney #FinanceEducation",
+                "#TaxPlanning #InsurancePlanning #RetirementGoals #FinancialFreedom",
+                "#MoneyWisdom #InvestmentTips #FinancialPlanning #WealthCreation"
+            ];
+            
+            const randomHashtags = hashtags[Math.floor(Math.random() * hashtags.length)];
+            document.getElementById('hashtagOutput').textContent = randomHashtags;
+        }
+
+        function generateEngagementQuestion() {
+            const questions = [
+                "What's the funniest financial advice you've ever received? 😄",
+                "Share your worst investment mistake in emojis! 📉😅",
+                "If your portfolio could talk, what would it say? 💬",
+                "What financial concept took you longest to understand? 🤔",
+                "Tag someone who needs to start their SIP journey! 👇",
+                "What's your biggest financial fear? Let's address it together! 💪",
+                "If money grew on trees, would you still need financial planning? 🌳💰"
+            ];
+            
+            const randomQuestion = questions[Math.floor(Math.random() * questions.length)];
+            document.getElementById('questionOutput').textContent = randomQuestion;
+        }
+
+        function generateFallbackPost(style, topic) {
+            return `🎭 ${style.toUpperCase()} STYLE POST ABOUT ${topic.toUpperCase().replace('-', ' ')}\n\n[Create your humorous take on ${topic.replace('-', ' ')} here]\n\n💡 Key learning: [Add your educational insight]\n\n🎯 Call to action: What's your experience with ${topic.replace('-', ' ')}? Share below! 👇\n\n#FinanceWithFun #${topic.replace('-', '')} #FinancialEducation`;
+        }
+
+        function generateFallbackStory(theme, learning) {
+            return `📖 STORY TIME: ${theme.toUpperCase().replace('-', ' ')}\n\n[Craft your engaging story here that relates to ${learning}]\n\n💡 The lesson: ${learning}\n\n🎯 What's your story? Share your experience in the comments! 👇\n\n#FinancialStories #MoneyLessons #FinanceEducation`;
+        }
+
+        function generateFallbackTrending(format, topic) {
+            return `🔥 TRENDING FORMAT: ${format.toUpperCase().replace('-', ' ')}\n\n[Adapt this trending format to discuss ${topic}]\n\n💡 Educational angle: [Add your insights about ${topic}]\n\n🎯 Join the conversation: What do you think about ${topic}? 👇\n\n#TrendingNow #FinanceEducation #${topic.replace(' ', '')}`;
+        }
+
+        function copyToClipboard(elementId) {
+            const text = document.getElementById(elementId).textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                // Visual feedback
+                const button = event.target;
+                const originalText = button.innerHTML;
+                button.innerHTML = '<i class="fas fa-check mr-1"></i>Copied!';
+                button.classList.add('bg-green-500');
+                button.classList.remove('bg-blue-500', 'bg-red-500', 'bg-purple-500', 'bg-green-500');
+                
+                setTimeout(() => {
+                    button.innerHTML = originalText;
+                    button.classList.remove('bg-green-500');
+                    button.classList.add('bg-blue-500');
+                }, 2000);
+            });
+        }
+
+        // Initialize with sample content
+        document.addEventListener('DOMContentLoaded', function() {
+            generateComedyHashtags();
+            generateEngagementQuestion();
+        });
+    </script>
+</body>
+</html>
